@@ -1,0 +1,42 @@
+/* Roboto (variable font, weights 300-600, normal style).*/
+@font-face {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 300 600;
+  src: url("fonts/roboto-v51-latin-var.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 300 600;
+  src: url("fonts/roboto-v51-latin-ext-var.woff2") format("woff2");
+}
+
+/* Material Symbols Outlined */
+@font-face {
+  font-family: "Material Symbols Outlined";
+  font-style: normal;
+  font-weight: 400;
+  src: url("fonts/material-symbols-outlined.woff2") format("woff2");
+}
+
+/* Depricated Material Icons Outlined:
+ * https://github.com/google/material-design-icons/tree/master/font
+ * Unfortunately still used by some plugins as the icon font. Also
+   registered under "Material Icons" so older plugins (which reference the
+   plain "Material Icons" font-family) get the outlined glyphs too, keeping
+   icon style consistent across old and new plugins. */
+@font-face {
+  font-family: "Material Icons Outlined";
+  font-style: normal;
+  font-weight: 400;
+  src: url("fonts/material-icons-outlined.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Material Icons";
+  font-style: normal;
+  font-weight: 400;
+  src: url("fonts/material-icons-outlined.woff2") format("woff2");
+}
+
