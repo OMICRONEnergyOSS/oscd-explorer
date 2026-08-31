@@ -7,7 +7,7 @@ It starts with the OpenSCD host and plugin hub rather than a predefined plugin s
 
 We do NOT upload any information of any sort.
 You browser is only downloading never uploading anything.
-So when you connect to the [Open SCD Explorer](https://omicronenergyoss.github.io/oscd-explorer-distro/) you download/update all the JavaScript files to run the editor in your browser.
+So when you connect to the [Open SCD Explorer](https://omicronenergyoss.github.io/oscd-explorer/) you download/update all the JavaScript files to run the editor in your browser.
 
 # Adding a plugin
 

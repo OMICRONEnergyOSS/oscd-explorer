@@ -1,10 +1,10 @@
 {
-  "name": "oscd-explorer-distro",
+  "name": "oscd-explorer",
   "version": "0.0.1",
   "description": "Omicron Academy distribution - To support IEC 61850 training.",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/OMICRONEnergyOSS/oscd-explorer-distro.git"
+    "url": "git+https://github.com/OMICRONEnergyOSS/oscd-explorer.git"
   },
   "keywords": [
     "scl",
@@ -17,9 +17,9 @@
   ],
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/OMICRONEnergyOSS/oscd-explorer-distro/issues"
+    "url": "https://github.com/OMICRONEnergyOSS/oscd-explorer/issues"
   },
-  "homepage": "https://OMICRONEnergyOSS.github.io/oscd-explorer-distro/index.html",
+  "homepage": "https://OMICRONEnergyOSS.github.io/oscd-explorer/index.html",
   "type": "module",
   "scripts": {
     "lint": "eslint .",
