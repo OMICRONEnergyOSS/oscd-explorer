@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.0.2](https://github.com/OMICRONEnergyOSS/oscd-explorer/compare/oscd-explorer-v0.0.1...oscd-explorer-v0.0.2) (2026-08-31)
+
+
+### Features
+
+* initial commit ([300b7e4](https://github.com/OMICRONEnergyOSS/oscd-explorer/commit/300b7e45a2a9c8d274811d801fc4f115898543d6))
+
+
+### Bug Fixes
+
+* correct appIcon reference ([e5f0a73](https://github.com/OMICRONEnergyOSS/oscd-explorer/commit/e5f0a7312fdcaa4be201e80010a38e9c061ad3aa))
+* reference deployed version of plugins-hub ([a94d41f](https://github.com/OMICRONEnergyOSS/oscd-explorer/commit/a94d41faedc711113ba63a86ff032af1521f36bf))
+
 ## [0.0.1](https://github.com/OMICRONEnergyOSS/oscd-explorer/compare/oscd-explorer-v0.0.1...oscd-explorer-v0.0.1) (2025-08-22)
 
 
