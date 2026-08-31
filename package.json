@@ -30,7 +30,6 @@
     "start:bundle": "concurrently -k -r \"rollup -c rollup.config.js -w\" \"web-dev-server --root-dir dist --app-index index.html --open\""
   },
   "dependencies": {
-    "@compas-bearingpoint/plugins": "file:../../stee-re/compas-bearingpoint-plugins",
     "@omicronenergy/oscd-background-editv1": "^0.0.7",
     "@omicronenergy/oscd-background-plugin-config": "^0.0.0",
     "@omicronenergy/oscd-background-wizard-events": "^0.0.4",
