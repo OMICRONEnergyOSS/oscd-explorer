@@ -93874,7 +93874,7 @@ const plugins = {
       translations: { de: "Plugin Hub" },
       icon: "edit",
       requireDoc: false,
-      tagName: "plugin-hub",
+      src: "https://ase-compas.github.io/compas-bearingpoint-plugins/compas/plugins/plugins-hub/index.js",
     },
   ],
   background: [
