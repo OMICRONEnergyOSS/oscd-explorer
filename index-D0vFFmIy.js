@@ -11292,11 +11292,12 @@ EditorPluginsPanel.styles = i$d `
        light surface and reset these back to the shell defaults; see
        .rail-flyout.)
 
-       NB: these are set on the content containers rather than :host on purpose —
-       the shell sets a universal rule (* { --md-sys-color-on-surface: ... }),
-       which targets the panel host from the outer tree and beats a :host
-       declaration. That universal rule cannot cross into this shadow tree, so
-       declaring on the containers reliably wins for all descendants. */
+       NB: these are set on the content containers rather than :host on
+       purpose. A :host declaration would sit on the same element that
+       inherits --editor-plugins-panel-item-text-color, which is itself
+       derived from --md-sys-color-on-surface; declaring on the containers
+       keeps the source token a plain inherited value and so cannot form a
+       reference cycle. See "Layers are read upward" in THEMING.md. */
     .rail,
     .tree-container,
     .footer {
@@ -12156,12 +12157,13 @@ PluginsMenu.styles = i$d `
     :host {
       display: flex;
       align-items: center;
-      gap: 4px;
     }
 
     img {
       height: var(--app-bar-app-icon-height);
       width: var(--app-bar-app-icon-width);
+      /* Logical property so the spacing follows the writing direction. */
+      margin-inline-end: var(--app-bar-logo-gap);
     }
 
     :host h1.app-title {
@@ -12172,12 +12174,17 @@ PluginsMenu.styles = i$d `
       line-height: var(--app-bar-title-text-line-height);
       letter-spacing: var(--app-bar-title-text-letter-spacing);
       color: var(--app-bar-title-text-color);
+      /* As a flex item the h1 is blockified, so its UA block margins would
+         otherwise apply; the app bar owns this element's spacing. */
+      margin-block: 0;
+      margin-inline: 0 var(--app-bar-title-menu-gap);
       display: inline;
     }
 
     oscd-filled-icon-button {
+      /* Local colour scheme: icon colour and all derived state layers follow
+         from the system colour, so only the size needs setting explicitly. */
       --md-sys-color-on-primary: var(--plugins-menu-button-color);
-      --md-filled-icon-button-icon-color: var(--plugins-menu-button-color);
       --md-filled-icon-button-icon-size: var(--plugins-menu-button-size);
     }
 
@@ -12673,6 +12680,8 @@ FilesMenu.styles = i$d `
       --md-text-button-label-text-weight: var(--file-menu-text-weight);
       --md-text-button-label-text-size: var(--file-menu-text-size);
       --md-text-button-label-text-style: normal;
+      /* Local colour scheme: the text button derives its label, icon and
+         state-layer colours from the system primary colour. */
       --md-sys-color-primary: var(--file-menu-text-color);
       --md-text-button-icon-size: 24px;
       display: inline;
@@ -12735,8 +12744,7 @@ const oscdShellDesignTokens = i$d `
    * --oscd-theme-* variables from outside; nothing brand-specific belongs
    * in this file.
    */
-  :host,
-  * {
+  :host {
     --oscd-primary: var(--oscd-theme-primary, #2aa198);
     --oscd-secondary: var(--oscd-theme-secondary, #6c71c4);
     --oscd-base03: var(--oscd-theme-base03, #002b36);
@@ -12771,8 +12779,6 @@ const oscdShellDesignTokens = i$d `
     --md-sys-color-scrim: #000000;
     --md-sys-color-error: var(--oscd-error);
     --md-sys-color-on-error: var(--oscd-base3);
-    --md-icon-button-disabled-icon-color: var(--oscd-base3);
-    /* --md-menu-item-selected-label-text-color: var(--oscd-base01); */
     --md-icon-button-disabled-icon-color: var(--oscd-base3);
 
     /* MD3 has no single generic "system font" token (unlike color); its
@@ -12819,27 +12825,13 @@ const oscdShellDesignTokens = i$d `
     --mdc-theme-text-disabled-on-light: rgba(255, 255, 255, 0.38);
   }
 
-  :host,
-  * {
-    --app-bar-height: 54px;
-
-    --md-sys-color-primary: var(--oscd-primary);
-    --md-sys-color-on-primary: var(--oscd-base3);
-
-    --md-sys-color-secondary-container: var(--oscd-base2);
-
-    --md-sys-color-surface: var(--oscd-base3);
-    --md-sys-color-on-surface: var(--oscd-base00);
-  }
-
   /*
    * Public token -> internal token mappings
    *
    * Example pattern:
    * --internal-variable-name: var(--oscd-shell-public-token, <default>);
    */
-  :host,
-  * {
+  :host {
     /* Shell root */
     --shell-background-color: var(
       --oscd-shell-background-color,
@@ -12863,6 +12855,8 @@ const oscdShellDesignTokens = i$d `
     );
     --app-bar-app-icon-height: var(--oscd-shell-app-bar-icon-height, 34.4px);
     --app-bar-app-icon-width: var(--oscd-shell-app-bar-icon-width, auto);
+    --app-bar-logo-gap: var(--oscd-shell-app-bar-logo-gap, 16px);
+    --app-bar-title-menu-gap: var(--oscd-shell-app-bar-title-menu-gap, 4px);
     --app-bar-title-text-font-family: var(
       --oscd-shell-app-bar-title-font-family,
       var(--md-ref-typeface-plain)
@@ -12922,6 +12916,22 @@ const oscdShellDesignTokens = i$d `
     --app-bar-action-icon-color: var(
       --oscd-shell-app-bar-action-icon-color,
       var(--md-sys-color-on-primary)
+    );
+    --app-bar-action-icon-disabled-color: var(
+      --oscd-shell-app-bar-action-icon-disabled-color,
+      var(--md-sys-color-on-primary)
+    );
+    --app-bar-action-icon-disabled-container-opacity: var(
+      --oscd-shell-app-bar-action-icon-disabled-container-opacity,
+      0
+    );
+    --app-bar-separator-color: var(
+      --oscd-shell-app-bar-separator-color,
+      currentColor
+    );
+    --app-bar-separator-opacity: var(
+      --oscd-shell-app-bar-separator-opacity,
+      0.38
     );
 
     /* Bridge to oscd-ui app bar tokens */
@@ -13655,8 +13665,8 @@ OscdShell.styles = [
       oscd-divider.vertical {
         width: 1px;
         height: 32px;
-        --md-divider-color: var(--app-bar-separator-color, currentColor);
-        opacity: var(--app-bar-separator-opacity, 0.38);
+        --md-divider-color: var(--app-bar-separator-color);
+        opacity: var(--app-bar-separator-opacity);
       }
 
       [slot='alignEnd'] {
@@ -13669,18 +13679,19 @@ OscdShell.styles = [
         margin: 0 8px;
       }
 
-      oscd-app-bar * {
-        --md-filled-icon-button-disabled-container-opacity: var(
-          --app-bar-action-icon-disabled-container-opacity,
-          0
-        );
-        --md-filled-icon-button-disabled-icon-color: var(
-          --app-bar-action-icon-disabled-color,
-          var(--md-sys-color-on-primary)
-        );
-        --md-filled-icon-button-icon-size: var(--app-bar-action-icon-size);
-        --md-filled-icon-button-icon-color: var(--app-bar-action-icon-color);
+      [slot='alignEnd'] oscd-filled-icon-button {
+        /* Local colour scheme: setting the system colour once lets the icon
+           colour and every derived state layer follow from one declaration.
+           Safe because the token mapping block is declared only on :host, so
+           --app-bar-action-icon-color is inherited here, not re-declared. */
         --md-sys-color-on-primary: var(--app-bar-action-icon-color);
+        --md-filled-icon-button-icon-size: var(--app-bar-action-icon-size);
+        --md-filled-icon-button-disabled-icon-color: var(
+          --app-bar-action-icon-disabled-color
+        );
+        --md-filled-icon-button-disabled-container-opacity: var(
+          --app-bar-action-icon-disabled-container-opacity
+        );
       }
 
       main {
