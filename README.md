@@ -3,6 +3,26 @@
 OpenSCD Explorer is a maintained, vendor-neutral OpenSCD environment.
 It starts with the OpenSCD host and plugin hub rather than a predefined plugin suite. You can add plugins from participating vendors and create your own workspace for exploration, evaluation, or prototyping. Plugin combinations are not necessarily tested, curated, or certified to work together, and this distro is not intended to represent a production-ready vendor solution.
 
+# Landing page
+
+`landing-page.js` supplies a custom `oscd-shell` landing page
+(`<oscd-explorer-landing-page slot="landing-page">` in `index.html`),
+replacing the shell's default welcome screen. It shows two panels:
+
+- **Other OpenSCD Distributions** — fetched live from
+  [openscd.org/get.html](https://openscd.org/get.html) at runtime (sanitized
+  before rendering), so the list of known distributions always matches the
+  community site without needing a code change here.
+- **Make It Your Own** — explains that vendors maintain their own plugin
+  lists, browsable via the "Plugin Hub" editor plugin, and that picks persist
+  to `localStorage` automatically (via `oscd-background-plugin-config`).
+  Editor plugins only render once a document is open, so the "Start
+  Exploring" / "Continue Customizing Plugins" actions open a throwaway,
+  unsaved document named `new-project.scd` purely to reveal the plugin rail.
+  Returning visitors (detected via existing `localStorage['plugins']` data)
+  see a condensed panel with quick-access buttons instead of the full
+  first-time walkthrough.
+
 # Security
 
 We do NOT upload any information of any sort.

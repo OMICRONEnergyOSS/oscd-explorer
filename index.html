@@ -19,12 +19,17 @@
     <link href="fonts.css" rel="stylesheet" />
     <link href="index.css" rel="stylesheet" />
     <script type="module" src="index.js"></script>
+    <script type="module" src="landing-page.js"></script>
   </head>
   <body>
     <oscd-shell
       locale="en"
       appTitle="OpenSCD Explorer"
       appIcon="./openscd-icon.svg"
-    ></oscd-shell>
+    >
+      <oscd-explorer-landing-page
+        slot="landing-page"
+      ></oscd-explorer-landing-page>
+    </oscd-shell>
   </body>
 </html>
