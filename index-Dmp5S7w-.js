@@ -25551,9 +25551,9 @@ const sf = [
   {
     prefix: "OE",
     name: "OmicronEnergy Plugins",
-    icon: "/omicronenergy.png",
+    icon: "https://omicronenergyoss.github.io/oscd-explorer/omicronenergy.png",
     description: "Official OmicronEnergy plugin provider for OpenSCD.",
-    pluginsUrl: "/omicronenergy.plugins.json"
+    pluginsUrl: "https://omicronenergyoss.github.io/oscd-explorer/omicronenergy.plugins.json"
   }
 ], lf = sf;
 var of = /* @__PURE__ */ ie('<span class="badge badge-builtin bp-typo-button">Built-in</span>'), uf = /* @__PURE__ */ ie("<span> </span>"), df = /* @__PURE__ */ ie("<span> </span>"), cf = /* @__PURE__ */ ie('<span class="badge badge-incompatible bp-typo-button">Incompatible</span>'), ff = /* @__PURE__ */ ie('<div role="button" tabindex="0"><div class="card-top svelte-1myq0bn"><div class="plugin-icon-wrapper svelte-1myq0bn"><span class="material-icons plugin-icon svelte-1myq0bn"> </span></div> <button><!></button></div> <div class="plugin-name bp-typo-16-bold svelte-1myq0bn"> </div> <div class="plugin-kind-wrapper svelte-1myq0bn"><div class="badge badge-kind bp-typo-label"><span class="material-icons badge-icon"> </span> </div></div> <div class="plugin-description bp-typo-body svelte-1myq0bn"> </div> <div class="plugin-badges svelte-1myq0bn"><!> <!> <!></div></div>');
@@ -25959,22 +25959,7 @@ function zf(n, e) {
         position: M.position || (M.kind === "menu" ? "middle" : void 0),
         active: M.activationState === "ACTIVE",
         activeByDefault: (U == null ? void 0 : U.activeByDefault) ?? M.activeByDefault,
-        installed: M.installationState === "INSTALLED",
-        // Host merge logic (oscd-background-plugin-config's changePlugin)
-        // spreads this config onto whatever entry already sits in
-        // oscd-shell's in-memory plugin set. oscd-shell's `plugins`
-        // setter (loadSourcedPlugins) rewrites src-based entries into
-        // {..., tagName}, dropping `src`, purely for the customElements
-        // registry. If that stale tagName-bearing entry is still present
-        // (e.g. reinstalling/reconfiguring on a later page load), the
-        // spread merge keeps its `tagName` since this config doesn't
-        // mention the key at all. The resulting src+tagName hybrid then
-        // makes the host skip re-importing/registering the plugin
-        // module entirely (it looks "already resolved"), so it silently
-        // fails to load. Explicitly nulling tagName here ensures the
-        // spread overwrites any stale value, and JSON.stringify drops
-        // `undefined` keys so it's never written to localStorage.
-        tagName: void 0
+        installed: M.installationState === "INSTALLED"
       }
     }, _e = new CustomEvent("oscd-configure-plugin", { bubbles: true, composed: true, detail: Z });
     f.dispatchEvent(_e);
