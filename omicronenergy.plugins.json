@@ -1,0 +1,46 @@
+{
+  "plugins": [
+    {
+      "name": "SLD Designer",
+      "src": "https://omicronenergyoss.github.io/oscd-editor-sld/oscd-editor-sld.js",
+      "kind": "editor",
+      "icon": "edit",
+      "description": ""
+    },
+    {
+      "name": "Compare",
+      "src": "https://omicronenergyoss.github.io/oscd-editor-diff/oscd-editor-diff.js",
+      "kind": "editor",
+      "icon": "edit",
+      "description": ""
+    },
+    {
+      "name": "Source Editor",
+      "src": "https://omicronenergyoss.github.io/oscd-editor-source/oscd-editor-source.js",
+      "kind": "editor",
+      "icon": "edit",
+      "description": ""
+    },
+    {
+      "name": "Subscriber Data Binding",
+      "src": "https://omicronenergyoss.github.io/oscd-editor-subscriber-databinding/oscd-editor-subscriber-databinding.js",
+      "kind": "editor",
+      "icon": "edit",
+      "description": ""
+    },
+    {
+      "name": "Subscriber Message Binding",
+      "src": "https://omicronenergyoss.github.io/oscd-editor-subscriber-msgbinding/oscd-editor-subscriber-msgbinding.js",
+      "kind": "editor",
+      "icon": "edit",
+      "description": ""
+    },
+    {
+      "name": "IED Editor",
+      "src": "https://omicronenergyoss.github.io/oscd-editor-ied/oscd-editor-ied.js",
+      "kind": "editor",
+      "icon": "edit",
+      "description": ""
+    }
+  ]
+}
