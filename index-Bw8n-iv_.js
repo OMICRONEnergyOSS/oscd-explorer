@@ -26271,7 +26271,10 @@ function Yf() {
  *
  * Plugin entries are treated structurally: only `name` is read or written by
  * this module. Any other fields (`active`, `position`, `translations`, ...)
- * are carried through untouched on merge and are never stripped.
+ * are carried through untouched on merge and are never stripped, with one
+ * exception: a `kind` field on `detail.config` is stripped before storing,
+ * since `kind` is only ever a `PluginSet` bucket key (see `detail.kind`),
+ * never a legitimate property of the plugin entry itself.
  */
 const PLUGIN_KINDS = ['menu', 'editor', 'background'];
 function isPluginKind(kind) {
@@ -26331,14 +26334,31 @@ function applyPluginConfiguration(pluginSet, detail) {
             error: `Unsupported plugin kind "${kind}" for plugin "${name}"`,
         };
     }
+    // `kind` is the bucket a plugin lives under in a `PluginSet`, never a field
+    // on the plugin entry itself (see `PluginSet`'s `Record<PluginKind, P[]>`
+    // shape). Some callers nonetheless include a redundant `kind` inside
+    // `detail.config` (it's already carried by `detail.kind` above). Strip it
+    // here so it never lands on the stored entry: hosts such as `oscd-shell`
+    // use the presence of a `kind` property to distinguish plugin-group nodes
+    // from plugin leaves when rendering, so a stray `kind` on a leaf silently
+    // breaks that host's own rendering (e.g. its tree-item icon disappears).
+    let sanitizedConfig = config;
+    if (config !== null && 'kind' in config) {
+        const rest = { ...config };
+        delete rest.kind;
+        sanitizedConfig = rest;
+    }
     const current = pluginSet[kind] ?? [];
     const pluginExists = hasPlugin(current, name);
-    const hasConfig = config !== null;
+    const hasConfig = sanitizedConfig !== null;
     if (pluginExists && hasConfig) {
         return {
             pluginSet: {
                 ...pluginSet,
-                [kind]: changePlugin(current, { ...config, name }),
+                [kind]: changePlugin(current, {
+                    ...sanitizedConfig,
+                    name,
+                }),
             },
         };
     }
@@ -26351,7 +26371,7 @@ function applyPluginConfiguration(pluginSet, detail) {
         return {
             pluginSet: {
                 ...pluginSet,
-                [kind]: addPlugin(current, { ...config, name }),
+                [kind]: addPlugin(current, { ...sanitizedConfig, name }),
             },
         };
     }
