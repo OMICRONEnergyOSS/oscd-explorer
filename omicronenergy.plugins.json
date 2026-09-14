@@ -4,42 +4,42 @@
       "name": "SLD Designer",
       "src": "https://omicronenergyoss.github.io/oscd-editor-sld/oscd-editor-sld.js",
       "kind": "editor",
-      "icon": "edit",
-      "description": ""
+      "icon": "add_box",
+      "description": "Plugin for editing SLD files. It provides a graphical interface to create and modify Substation Layout Description (SLD) files."
     },
     {
       "name": "Compare",
       "src": "https://omicronenergyoss.github.io/oscd-editor-diff/oscd-editor-diff.js",
       "kind": "editor",
-      "icon": "edit",
-      "description": ""
+      "icon": "difference",
+      "description": "Plugin for comparing two SCL files. It highlights the differences between the files, making it easier to identify changes."
     },
     {
       "name": "Source Editor",
       "src": "https://omicronenergyoss.github.io/oscd-editor-source/oscd-editor-source.js",
       "kind": "editor",
-      "icon": "edit",
-      "description": ""
+      "icon": "code",
+      "description": "Plugin for editing SCL files in source code format. It provides a text-based interface, useful for both reviewing changes made elsewhere and applying additional tweaks not yet possible within the available plugins"
     },
     {
       "name": "Subscriber Data Binding",
       "src": "https://omicronenergyoss.github.io/oscd-editor-subscriber-databinding/oscd-editor-subscriber-databinding.js",
       "kind": "editor",
-      "icon": "edit",
-      "description": ""
+      "icon": "link",
+      "description": "Plugin for editing subscriber data bindings in SCL files. It allows users to define and modify the relationships between data sources and subscribers within the SCL structure."
     },
     {
       "name": "Subscriber Message Binding",
       "src": "https://omicronenergyoss.github.io/oscd-editor-subscriber-msgbinding/oscd-editor-subscriber-msgbinding.js",
       "kind": "editor",
-      "icon": "edit",
-      "description": ""
+      "icon": "link",
+      "description": "Plugin for editing subscriber message bindings in SCL files. It enables users to manage the connections between messages and their respective subscribers, facilitating efficient communication within the SCL framework."
     },
     {
       "name": "IED Editor",
       "src": "https://omicronenergyoss.github.io/oscd-editor-ied/oscd-editor-ied.js",
       "kind": "editor",
-      "icon": "edit",
+      "icon": "developer_board",
       "description": ""
     }
   ]
