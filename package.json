@@ -31,18 +31,18 @@
   },
   "dependencies": {
     "@omicronenergy/oscd-background-editv1": "^0.0.7",
-    "@omicronenergy/oscd-background-plugin-config": "^0.0.0",
+    "@omicronenergy/oscd-background-plugin-config": "^0.0.1",
     "@omicronenergy/oscd-background-wizard-events": "^0.0.4",
     "@omicronenergy/oscd-menu-commons": "^0.0.1",
     "@omicronenergy/oscd-menu-open": "^0.0.6",
     "@omicronenergy/oscd-menu-save": "^0.0.2",
-    "@omicronenergy/oscd-shell": "^0.0.14",
+    "@omicronenergy/oscd-shell": "^0.0.16",
     "@open-wc/scoped-elements": "^3.0.6",
-    "@openscd/oscd-api": "^0.1.6",
-    "lit": "^3.3.2",
     "@openenergytools/xml-schema-validator": "^0.0.1",
+    "@openscd/oscd-api": "^0.1.6",
     "@webcomponents/scoped-custom-element-registry": "^0.0.10",
-    "ace-builds": "^1.44.0"
+    "ace-builds": "^1.44.0",
+    "lit": "^3.3.2"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",

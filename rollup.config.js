@@ -55,10 +55,29 @@ export default [
             src: ["openscd-logo.svg", "openscd-icon.svg"],
             dest: `${outputDir}/`,
           },
+          {
+            src: ["omicronenergy.plugins.json", "omicronenergy.png"],
+            dest: `${outputDir}/`,
+          },
           // Add more patterns if you have more assets
         ],
         verbose: true,
         flatten: false,
+      }),
+      copy({
+        targets: [
+          // plugins-hub's plugin-wrapper resolves its stylesheet at runtime via
+          // `new URL(import.meta.url)`. Since this rollup config flattens all
+          // JS chunks into the dist root (entryFileNames/chunkFileNames have no
+          // subdirectories), that lookup always resolves to "<origin>/style.css",
+          // regardless of which chunk the plugin code ends up inlined into.
+          {
+            src: "node_modules/@compas-bearingpoint/plugins/dist/apps/plugins-hub/style.css",
+            dest: `${outputDir}/`,
+          },
+        ],
+        verbose: true,
+        flatten: true,
       }),
     ],
     output: {
