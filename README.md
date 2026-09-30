@@ -7,21 +7,19 @@ It starts with the OpenSCD host and plugin hub rather than a predefined plugin s
 
 `landing-page.js` supplies a custom `oscd-shell` landing page
 (`<oscd-explorer-landing-page slot="landing-page">` in `index.html`),
-replacing the shell's default welcome screen. It shows two panels:
+replacing the shell's default welcome screen. Its **Distributions** card
+lists the six name/URL pairs in the locally maintained `distros.json`
+(copied into the bundle). Update that file when the community list changes;
+the list is not fetched from openscd.org. The **Further info** card links to
+other OpenSCD resources.
 
-- **Other OpenSCD Distributions** — fetched live from
-  [openscd.org/get.html](https://openscd.org/get.html) at runtime (sanitized
-  before rendering), so the list of known distributions always matches the
-  community site without needing a code change here.
-- **Make It Your Own** — explains that vendors maintain their own plugin
-  lists, browsable via the "Plugin Hub" editor plugin, and that picks persist
-  to `localStorage` automatically (via `oscd-background-plugin-config`).
-  Editor plugins only render once a document is open, so the "Start
-  Exploring" / "Continue Customizing Plugins" actions open a throwaway,
-  unsaved document named `new-project.scd` purely to reveal the plugin rail.
-  Returning visitors (detected via existing `localStorage['plugins']` data)
-  see a condensed panel with quick-access buttons instead of the full
-  first-time walkthrough.
+The **Getting started** section shows three steps: explore, add plugins, and
+open a project. The "Start exploring" action opens an unsaved document named
+`new-project.scd` to reveal the plugin rail and the Plugin Hub; plugin picks
+persist to `localStorage` via `oscd-background-plugin-config`. Returning
+visitors (detected via `localStorage['plugins']`) keep the steps but see
+quick-access actions below them. Organization logos for the bottom of the
+page are deferred until approved image assets are available.
 
 # Security
 

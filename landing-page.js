@@ -1,13 +1,26 @@
 import { LitElement, html, css, nothing } from "lit";
-import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { newOpenEvent } from "@openscd/oscd-api/utils.js";
 
-/** URL of the OpenSCD.org page listing known OpenSCD distributions. Fetched
- * at runtime so the "OpenSCD Distributions" panel never goes stale. */
+/** Local, static list of known OpenSCD distributions. Curated by hand for
+ * now; a future `oscd-registry` package is expected to host this file so it
+ * can be fetched from a shared location instead of duplicated per distro. */
+const DISTROS_JSON_URL = "./distros.json";
+
+/** OpenSCD project site: the canonical, up-to-date list of distributions
+ * lives here in case this static copy falls behind. */
 const OPENSCD_GET_URL = "https://openscd.org/get.html";
 
-/** Selector for the main documentation content on the fetched page. */
-const OPENSCD_GET_CONTENT_SELECTOR = ".vp-doc";
+const FURTHER_INFO_LINKS = [
+  { name: "OpenSCD.org", url: "https://openscd.org" },
+  {
+    name: "oscd-explorer on GitHub",
+    url: "https://github.com/OMICRONEnergyOSS/oscd-explorer",
+  },
+  {
+    name: "Release notes",
+    url: "https://github.com/OMICRONEnergyOSS/oscd-explorer/releases",
+  },
+];
 
 /** localStorage key that `oscd-background-plugin-config` writes plugin
  * selections to. Its presence means the user has already customized their
@@ -35,62 +48,37 @@ function readHasCustomizations() {
   }
 }
 
-/** Strips anything that could execute script from HTML fetched from a
- * third-party origin before it is rendered: `<script>` elements, `on*`
- * event handler attributes, and `javascript:` URLs. The source URL is a
- * fixed, org-controlled constant (not user input), but this keeps the risk
- * low even if that page were ever compromised. */
-function sanitizeFragment(fragment) {
-  fragment.querySelectorAll("script").forEach((node) => node.remove());
-  fragment.querySelectorAll("*").forEach((node) => {
-    [...node.attributes].forEach((attr) => {
-      const name = attr.name.toLowerCase();
-      const value = attr.value.trim().toLowerCase();
-      if (name.startsWith("on") || value.startsWith("javascript:")) {
-        node.removeAttribute(attr.name);
-      }
-    });
-    if (node.tagName === "A") {
-      node.setAttribute("target", "_blank");
-      node.setAttribute("rel", "noopener noreferrer");
-    }
-  });
-  return fragment;
-}
-
 export class OscdExplorerLandingPage extends LitElement {
   static properties = {
     hasCustomizations: { state: true },
     distrosStatus: { state: true },
-    distrosContent: { state: true },
+    distros: { state: true },
   };
 
   constructor() {
     super();
     this.hasCustomizations = false;
     this.distrosStatus = "loading";
-    this.distrosContent = nothing;
+    this.distros = [];
   }
 
   connectedCallback() {
     super.connectedCallback();
     this.hasCustomizations = readHasCustomizations();
-    this.loadOtherDistros();
+    this.loadDistros();
   }
 
-  async loadOtherDistros() {
+  /** Loads the static, hand-curated distros list shipped alongside this
+   * plugin. Expected to be replaced by a fetch against a shared
+   * `oscd-registry` package once that exists (see DISTROS_JSON_URL). */
+  async loadDistros() {
     try {
-      const response = await fetch(OPENSCD_GET_URL);
+      const response = await fetch(new URL(DISTROS_JSON_URL, import.meta.url));
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const text = await response.text();
-      const parsed = new DOMParser().parseFromString(text, "text/html");
-      const main = parsed.querySelector(OPENSCD_GET_CONTENT_SELECTOR);
-      if (!main) throw new Error("Expected content not found");
-      sanitizeFragment(main);
-      this.distrosContent = unsafeHTML(main.innerHTML);
+      this.distros = await response.json();
       this.distrosStatus = "loaded";
     } catch (err) {
-      console.warn("Could not load openscd.org/get.html:", err);
+      console.warn(`Could not load ${DISTROS_JSON_URL}:`, err);
       this.distrosStatus = "error";
     }
   }
@@ -124,17 +112,19 @@ export class OscdExplorerLandingPage extends LitElement {
   renderDistrosPanel() {
     return html`
       <section class="panel distros-panel">
-        <h2>OpenSCD Distributions</h2>
-        <p class="panel-intro">
-          Contributors across the OpenSCD community build and maintain their own
-          curated, styled distributions &mdash; each tailored to a specific
-          audience or workflow.
-          <a href="${OPENSCD_GET_URL}" target="_blank" rel="noopener noreferrer"
-            >Further information on openscd.org</a
-          >.
-        </p>
+        <div class="panel-heading">
+          <span class="panel-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48" fill="none">
+              <path d="M24 4 43 14v20L24 44 5 34V14L24 4Z M5 14l19 11 19-11M24 25v19" />
+            </svg>
+          </span>
+          <div>
+            <h2>Distributions</h2>
+            <p class="panel-intro">Choose a distribution that fits your workflow.</p>
+          </div>
+        </div>
         ${this.distrosStatus === "loading"
-          ? html`<p class="hint">Loading current list…</p>`
+          ? html`<p class="hint">Loading…</p>`
           : nothing}
         ${this.distrosStatus === "error"
           ? html`<p class="hint">
@@ -148,49 +138,93 @@ export class OscdExplorerLandingPage extends LitElement {
             </p>`
           : nothing}
         ${this.distrosStatus === "loaded"
-          ? html`<div class="fetched-content">${this.distrosContent}</div>`
+          ? html`<ul class="link-list">
+              ${this.distros.map(
+                (distro) => html`
+                  <li>
+                    <a
+                      href="${distro.url}"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      >${distro.name} →</a
+                    >
+                  </li>
+                `,
+              )}
+            </ul>`
           : nothing}
+        <svg class="panel-art" viewBox="0 0 160 160" fill="none" aria-hidden="true">
+          <path d="M80 5 150 45v75L80 155 10 120V45L80 5Z M10 45l70 42 70-42M80 87v68" />
+        </svg>
       </section>
     `;
   }
 
-  renderFirstTimePanel() {
+  static renderFurtherInfoPanel() {
     return html`
-      <p>
-        Explorer is the neutral, unstyled OpenSCD distro: a space to try things
-        out and assemble your own workspace, rather than a polished product in
-        its own right. Vendors who build OpenSCD plugins maintain their own
-        lists of plugins. Use the <strong>Plugin Hub</strong> to browse what is
-        available and pick only the plugins you need &mdash; your selection is
-        saved to your browser's local storage, so it is still there next time
-        you visit.
-      </p>
-      <ol class="steps">
-        <li>Start with a fresh, empty document.</li>
-        <li>
-          Open <strong>Plugin Hub</strong> from the plugin rail on the left.
-        </li>
-        <li>Toggle on the plugins you want &mdash; that's it.</li>
-      </ol>
-      <button class="cta" @click=${() => this.handleStartExploring()}>
-        Start Exploring
-      </button>
+      <section class="panel further-info-panel">
+        <div class="panel-heading">
+          <span class="panel-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48" fill="none">
+              <path d="M12 4h19l9 9v31H12V4Z M31 4v10h9M19 23h15M19 30h15M19 37h10" />
+            </svg>
+          </span>
+          <div>
+            <h2>Further info</h2>
+            <p class="panel-intro">Explore related tools and resources.</p>
+          </div>
+        </div>
+        <ul class="link-list">
+          ${FURTHER_INFO_LINKS.map(
+            (link) => html`
+              <li>
+                <a href="${link.url}" target="_blank" rel="noopener noreferrer"
+                  >${link.name} →</a
+                >
+              </li>
+            `,
+          )}
+        </ul>
+        <svg class="panel-art" viewBox="0 0 160 160" fill="none" aria-hidden="true">
+          <path d="M32 4h76l32 32v120H32V4Z M108 4v33h32M51 67h70M51 88h70M51 109h47" />
+        </svg>
+      </section>
+    `;
+  }
+
+  renderFirstTimeActions() {
+    return html`
+      <div class="quick-actions">
+        <button class="cta" @click=${() => this.handleStartExploring()}>
+          Start exploring
+        </button>
+        ${this.renderOpenFileAction()}
+      </div>
       <p class="hint">
         This opens a blank, unsaved document named
-        <code>${STARTER_DOC_NAME}</code> purely so the plugin rail becomes
-        available &mdash; nothing is stored or sent anywhere.
+        <code>${STARTER_DOC_NAME}</code> so you can reach the Plugin Hub.
+        Your plugin selection is saved in this browser.
       </p>
     `;
   }
 
-  renderReturningPanel() {
+  renderOpenFileAction() {
+    const openFilePlugin = this.getMenuPlugins().find(
+      (plugin) => plugin.tagName === "oscd-menu-open",
+    );
+    return openFilePlugin
+      ? html`<button
+          class="cta secondary"
+          @click=${() => this.handleMenuPluginClick(openFilePlugin)}
+        >
+          Open an existing project
+        </button>`
+      : nothing;
+  }
+
+  renderReturningActions() {
     const menuPlugins = this.getMenuPlugins();
     return html`
-      <p>
-        Welcome back! Your plugin selection from last time is still saved in
-        this browser. Jump back in below, or open
-        <strong>Plugin Hub</strong> again any time to adjust your picks.
-      </p>
       <div class="quick-actions">
         ${menuPlugins.map(
           (plugin) => html`
@@ -206,16 +240,43 @@ export class OscdExplorerLandingPage extends LitElement {
           Continue Customizing Plugins
         </button>
       </div>
+      <p class="hint">Your plugin selection is saved in this browser.</p>
     `;
   }
 
-  renderMakeItYourOwnPanel() {
+  renderGettingStartedSection() {
     return html`
-      <section class="panel customize-panel">
-        <h2>Make It Your Own</h2>
+      <section class="getting-started">
+        <h2>Getting started</h2>
+        <p class="section-intro">
+          No distribution quite fits? Set up your own workspace in a few simple steps.
+        </p>
+        <ol class="steps">
+          <li>
+            <span class="step-number" aria-hidden="true">1</span>
+            <div>
+              <h3>Start exploring</h3>
+              <p>Get familiar with the interface and try the built-in plugins.</p>
+            </div>
+          </li>
+          <li>
+            <span class="step-number" aria-hidden="true">2</span>
+            <div>
+              <h3>Add plugins</h3>
+              <p>Use the Plugin Hub to choose tools that match your workflow.</p>
+            </div>
+          </li>
+          <li>
+            <span class="step-number" aria-hidden="true">3</span>
+            <div>
+              <h3>Open an existing project</h3>
+              <p>Open an SCL file to start viewing, editing and validating your data.</p>
+            </div>
+          </li>
+        </ol>
         ${this.hasCustomizations
-          ? this.renderReturningPanel()
-          : this.renderFirstTimePanel()}
+          ? this.renderReturningActions()
+          : this.renderFirstTimeActions()}
       </section>
     `;
   }
@@ -224,15 +285,18 @@ export class OscdExplorerLandingPage extends LitElement {
     return html`
       <div class="landing">
         <header class="banner">
-          <h1>OpenSCD Explorer</h1>
+          <h1>Welcome to OpenSCD <span>Explorer</span></h1>
+          <p class="tagline">Explore OpenSCD and build your workspace.</p>
           <p>
-            The get-to-know-OpenSCD distro: explore the OpenSCD host, browse
-            vendor plugins, and assemble your own workspace.
+            OpenSCD Explorer is an IEC 61850 SCL editor and workspace built from
+            configurable plugins. It helps you view, edit and validate SCL files,
+            and extend your environment with the tools you need.
           </p>
         </header>
         <div class="columns">
-          ${this.renderDistrosPanel()} ${this.renderMakeItYourOwnPanel()}
+          ${this.renderDistrosPanel()} ${OscdExplorerLandingPage.renderFurtherInfoPanel()}
         </div>
+        ${this.renderGettingStartedSection()}
       </div>
     `;
   }
@@ -242,13 +306,11 @@ export class OscdExplorerLandingPage extends LitElement {
       display: block;
       height: 100%;
       overflow: auto;
-      background-color: var(--landing-background-color, #fff);
+      background-color: var(--landing-background-color, #fbf4e2);
       color: var(--md-sys-color-on-surface, #1a1a1a);
       font-family: var(--landing-heading-font-family, "Roboto", sans-serif);
       box-sizing: border-box;
-      /* Deliberately not --landing-card-radius: the shell defines that as
-       * 2px for its small plugin-grid cards, which reads as square here. */
-      --panel-radius: 16px;
+      --panel-radius: 14px;
     }
 
     * {
@@ -256,74 +318,186 @@ export class OscdExplorerLandingPage extends LitElement {
     }
 
     .landing {
-      max-width: 1100px;
+      max-width: 1300px;
       margin: 0 auto;
-      padding: 32px 24px 64px;
+      padding: 48px 32px 72px;
     }
 
     .banner {
-      text-align: center;
-      margin-bottom: 32px;
+      margin: 0 16px 72px;
+      max-width: 720px;
     }
 
     .banner h1 {
-      color: var(--landing-heading-color, inherit);
-      font-size: var(--landing-heading-size, 2.25rem);
-      font-weight: var(--landing-heading-weight, 500);
-      margin: 0 0 8px;
+      color: var(--landing-heading-color, #657d84);
+      font-size: var(--landing-heading-size, clamp(2.25rem, 4vw, 3.25rem));
+      line-height: 1.15;
+      font-weight: var(--landing-heading-weight, 700);
+      margin: 0 0 12px;
+    }
+
+    .banner h1 span {
+      color: #2e9f9d;
     }
 
     .banner p {
       color: var(--landing-subheading-color, inherit);
-      font-size: var(--landing-subheading-size, 1rem);
-      margin: 0;
+      font-size: var(--landing-subheading-size, 1.1rem);
+      line-height: 1.45;
+      margin: 0 0 20px;
+    }
+
+    .banner .tagline {
+      color: #555;
+      font-size: 1.4rem;
     }
 
     .columns {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-      align-items: start;
-    }
-
-    @media (max-width: 800px) {
-      .columns {
-        grid-template-columns: 1fr;
-      }
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
     }
 
     .panel {
-      border: 1px solid var(--md-sys-color-outline-variant, #e0e0e0);
+      position: relative;
+      overflow: hidden;
       border-radius: var(--panel-radius);
-      padding: 24px;
+      padding: 28px 32px 24px;
+      background: var(--landing-panel-background-color, #706ab9);
+      color: var(--landing-panel-color, #fff);
     }
 
     .panel h2 {
-      margin-top: 0;
+      margin: 0 0 4px;
+      color: inherit;
+      font-size: 1.35rem;
+    }
+
+    .panel-heading {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      min-height: 72px;
+    }
+
+    .panel-icon {
+      display: grid;
+      place-items: center;
+      width: 68px;
+      height: 68px;
+      flex: none;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.23);
+    }
+
+    .panel-icon svg {
+      width: 36px;
+      height: 36px;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
 
     .panel-intro {
-      opacity: 0.85;
+      margin: 0;
+      opacity: 0.9;
     }
 
     .hint {
-      font-size: 0.85rem;
-      opacity: 0.75;
+      font-size: 0.875rem;
+      opacity: 0.8;
+    }
+
+    .link-list {
+      position: relative;
+      z-index: 1;
+      list-style: none;
+      margin: 24px 0 0;
+      padding: 0;
+    }
+
+    .link-list li {
+      margin: 0 0 13px;
+    }
+
+    .link-list a {
+      color: inherit;
+      font-weight: 500;
+      text-underline-offset: 3px;
+      overflow-wrap: anywhere;
+    }
+
+    .panel-art {
+      position: absolute;
+      width: 160px;
+      height: 160px;
+      right: -12px;
+      bottom: -54px;
+      stroke: currentColor;
+      stroke-width: 4;
+      stroke-linejoin: round;
+      opacity: 0.2;
+      pointer-events: none;
+    }
+
+    .getting-started {
+      margin-top: 40px;
+    }
+
+    .getting-started h2 {
+      margin: 0 0 6px;
+      font-size: 2rem;
+    }
+
+    .section-intro {
+      margin-top: 0;
+      color: #555;
     }
 
     .steps {
-      padding-left: 20px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 32px;
+      list-style: none;
+      padding: 0;
+      margin: 28px 0 24px;
     }
 
     .steps li {
-      margin-bottom: 8px;
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+    }
+
+    .step-number {
+      display: grid;
+      place-items: center;
+      width: 48px;
+      height: 48px;
+      flex: none;
+      border-radius: 50%;
+      background: #e6daf0;
+      color: #493b70;
+      font-weight: 700;
+      font-size: 1.3rem;
+    }
+
+    .steps h3 {
+      font-size: 1.15rem;
+      margin: 8px 0 12px;
+    }
+
+    .steps p {
+      line-height: 1.45;
+      margin: 0;
     }
 
     .quick-actions {
       display: flex;
       flex-wrap: wrap;
       gap: 12px;
-      margin-top: 16px;
+      margin-top: 28px;
     }
 
     .cta {
@@ -343,16 +517,38 @@ export class OscdExplorerLandingPage extends LitElement {
       border: 1px solid var(--md-sys-color-primary, #005ea8);
     }
 
-    .fetched-content :first-child {
-      margin-top: 0;
+    @media (max-width: 850px) {
+      .columns {
+        grid-template-columns: 1fr;
+      }
+
+      .steps {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
     }
 
-    .fetched-content ul {
-      padding-left: 20px;
-    }
+    @media (max-width: 520px) {
+      .landing {
+        padding: 32px 16px 48px;
+      }
 
-    .fetched-content a {
-      color: var(--md-sys-color-primary, #005ea8);
+      .banner {
+        margin: 0 0 40px;
+      }
+
+      .panel {
+        padding: 22px;
+      }
+
+      .panel-heading {
+        gap: 16px;
+      }
+
+      .panel-icon {
+        width: 52px;
+        height: 52px;
+      }
     }
   `;
 }

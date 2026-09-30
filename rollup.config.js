@@ -56,7 +56,11 @@ export default [
             dest: `${outputDir}/`,
           },
           {
-            src: ["omicronenergy.plugins.json", "omicronenergy.png"],
+            src: [
+              "omicronenergy.plugins.json",
+              "omicronenergy.png",
+              "distros.json",
+            ],
             dest: `${outputDir}/`,
           },
           // Add more patterns if you have more assets
