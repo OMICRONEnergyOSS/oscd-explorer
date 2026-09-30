@@ -1,0 +1,26 @@
+[
+  {
+    "name": "OMICRON Academy OpenSCD",
+    "url": "https://omicronenergyoss.github.io/oscd-academy/"
+  },
+  {
+    "name": "OpenEnergyTools SCL Editor",
+    "url": "https://openenergytools.github.io/scl-editor"
+  },
+  {
+    "name": "Transpower NZ System Configuration Tool",
+    "url": "https://transpower-nz.github.io/open-scd"
+  },
+  {
+    "name": "LF Energy CoMPAS",
+    "url": "https://demo.compas.energy"
+  },
+  {
+    "name": "SprintEins OpenSCD",
+    "url": "https://openscd.sprinteins.com/"
+  },
+  {
+    "name": "Meinberg ICT",
+    "url": "https://meinberg-sync.github.io/mbg-open-scd"
+  }
+]

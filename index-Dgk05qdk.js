@@ -1,4 +1,4 @@
-import { f, u as u$1, S, b, e as e$4, i as i$2, t as t$1, E, a as i$3, c as i$4, A, w, D } from './directive-2lcl-B49.js';
+import { f, u as u$1, S, b, E, i as i$3, a as i$4, A, w, D } from './lit-element-C5J-QgzB.js';
 
 (function(){
 function k(a){var b=0;return function(){return b<a.length?{done:false,value:a[b++]}:{done:true}}}var l="function"==typeof Object.defineProperties?Object.defineProperty:function(a,b,d){if(a==Array.prototype||a==Object.prototype)return a;a[b]=d.value;return a};
@@ -79,7 +79,7 @@ typeof SuppressedError === "function" ? SuppressedError : function (error, suppr
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const t=t=>(e,o)=>{ void 0!==o?o.addInitializer(()=>{customElements.define(t,e);}):customElements.define(t,e);};
+const t$1=t=>(e,o)=>{ void 0!==o?o.addInitializer(()=>{customElements.define(t,e);}):customElements.define(t,e);};
 
 /**
  * @license
@@ -98,32 +98,32 @@ const t=t=>(e,o)=>{ void 0!==o?o.addInitializer(()=>{customElements.define(t,e);
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const e$3=(e,t,c)=>(c.configurable=true,c.enumerable=true,Reflect.decorate&&"object"!=typeof t&&Object.defineProperty(e,t,c),c);
+const e$4=(e,t,c)=>(c.configurable=true,c.enumerable=true,Reflect.decorate&&"object"!=typeof t&&Object.defineProperty(e,t,c),c);
 
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
- */function e$2(e,r){return (n,s,i)=>{const o=t=>t.renderRoot?.querySelector(e)??null;return e$3(n,s,{get(){return o(this)}})}}
+ */function e$3(e,r){return (n,s,i)=>{const o=t=>t.renderRoot?.querySelector(e)??null;return e$4(n,s,{get(){return o(this)}})}}
 
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-let e$1;function r$1(r){return (n,o)=>e$3(n,o,{get(){return (this.renderRoot??(e$1??=document.createDocumentFragment())).querySelectorAll(r)}})}
+let e$2;function r$1(r){return (n,o)=>e$4(n,o,{get(){return (this.renderRoot??(e$2??=document.createDocumentFragment())).querySelectorAll(r)}})}
 
 /**
  * @license
  * Copyright 2021 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
- */function o$3(o){return (e,n)=>{const{slot:r,selector:s}=o??{},c="slot"+(r?`[name=${r}]`:":not([name])");return e$3(e,n,{get(){const t=this.renderRoot?.querySelector(c),e=t?.assignedElements(o)??[];return void 0===s?e:e.filter(t=>t.matches(s))}})}}
+ */function o$3(o){return (e,n)=>{const{slot:r,selector:s}=o??{},c="slot"+(r?`[name=${r}]`:":not([name])");return e$4(e,n,{get(){const t=this.renderRoot?.querySelector(c),e=t?.assignedElements(o)??[];return void 0===s?e:e.filter(t=>t.matches(s))}})}}
 
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
- */function n$2(n){return (o,r)=>{const{slot:e}=n??{},s="slot"+(e?`[name=${e}]`:":not([name])");return e$3(o,r,{get(){const t=this.renderRoot?.querySelector(s);return t?.assignedNodes(n)??[]}})}}
+ */function n$2(n){return (o,r)=>{const{slot:e}=n??{},s="slot"+(e?`[name=${e}]`:":not([name])");return e$4(o,r,{get(){const t=this.renderRoot?.querySelector(s);return t?.assignedNodes(n)??[]}})}}
 
 const appliedClassMixins = new WeakMap();
 
@@ -767,13 +767,20 @@ const setLocale$1 = (newLocale) => {
  * Copyright 2020 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const a=Symbol.for(""),o$2=t=>{if(t?.r===a)return t?._$litStatic$},s=t=>({_$litStatic$:t,r:a}),i$1=(t,...r)=>({_$litStatic$:r.reduce((r,e,a)=>r+(t=>{if(void 0!==t._$litStatic$)return t._$litStatic$;throw Error(`Value passed to 'literal' function must be a 'literal' result: ${t}. Use 'unsafeStatic' to pass non-literal values, but\n            take care to ensure page security.`)})(e)+t[a+1],t[0]),r:a}),l$1=new Map,n$1=t=>(r,...e)=>{const a=e.length;let s,i;const n=[],u=[];let c,$=0,f=false;for(;$<a;){for(c=r[$];$<a&&void 0!==(i=e[$],s=o$2(i));)c+=s+r[++$],f=true;$!==a&&u.push(i),n.push(c),$++;}if($===a&&n.push(r[a]),f){const t=n.join("$$lit$$");void 0===(r=l$1.get(t))&&(n.raw=n,l$1.set(t,r=n)),e=u;}return t(r,...e)},u=n$1(b);
+const a=Symbol.for(""),o$2=t=>{if(t?.r===a)return t?._$litStatic$},s=t=>({_$litStatic$:t,r:a}),i$2=(t,...r)=>({_$litStatic$:r.reduce((r,e,a)=>r+(t=>{if(void 0!==t._$litStatic$)return t._$litStatic$;throw Error(`Value passed to 'literal' function must be a 'literal' result: ${t}. Use 'unsafeStatic' to pass non-literal values, but\n            take care to ensure page security.`)})(e)+t[a+1],t[0]),r:a}),l$1=new Map,n$1=t=>(r,...e)=>{const a=e.length;let s,i;const n=[],u=[];let c,$=0,f=false;for(;$<a;){for(c=r[$];$<a&&void 0!==(i=e[$],s=o$2(i));)c+=s+r[++$],f=true;$!==a&&u.push(i),n.push(c),$++;}if($===a&&n.push(r[a]),f){const t=n.join("$$lit$$");void 0===(r=l$1.get(t))&&(n.raw=n,l$1.set(t,r=n)),e=u;}return t(r,...e)},u=n$1(b);
+
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+const t={ATTRIBUTE:1,PROPERTY:3,BOOLEAN_ATTRIBUTE:4},e$1=t=>(...e)=>({_$litDirective$:t,values:e});let i$1 = class i{constructor(t){}get _$AU(){return this._$AM._$AU}_$AT(t,e,i){this._$Ct=t,this._$AM=e,this._$Ci=i;}_$AS(t,e){return this.update(t,e)}update(t,e){return this.render(...e)}};
 
 /**
  * @license
  * Copyright 2018 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
- */const e=e$4(class extends i$2{constructor(t){if(super(t),t.type!==t$1.ATTRIBUTE||"class"!==t.name||t.strings?.length>2)throw Error("`classMap()` can only be used in the `class` attribute and must be the only part in the attribute.")}render(t){return " "+Object.keys(t).filter(s=>t[s]).join(" ")+" "}update(s,[i]){if(void 0===this.st){this.st=new Set,void 0!==s.strings&&(this.nt=new Set(s.strings.join(" ").split(/\s/).filter(t=>""!==t)));for(const t in i)i[t]&&!this.nt?.has(t)&&this.st.add(t);return this.render(i)}const r=s.element.classList;for(const t of this.st)t in i||(r.remove(t),this.st.delete(t));for(const t in i){const s=!!i[t];s===this.st.has(t)||this.nt?.has(t)||(s?(r.add(t),this.st.add(t)):(r.remove(t),this.st.delete(t)));}return E}});
+ */const e=e$1(class extends i$1{constructor(t$1){if(super(t$1),t$1.type!==t.ATTRIBUTE||"class"!==t$1.name||t$1.strings?.length>2)throw Error("`classMap()` can only be used in the `class` attribute and must be the only part in the attribute.")}render(t){return " "+Object.keys(t).filter(s=>t[s]).join(" ")+" "}update(s,[i]){if(void 0===this.st){this.st=new Set,void 0!==s.strings&&(this.nt=new Set(s.strings.join(" ").split(/\s/).filter(t=>""!==t)));for(const t in i)i[t]&&!this.nt?.has(t)&&this.st.add(t);return this.render(i)}const r=s.element.classList;for(const t of this.st)t in i||(r.remove(t),this.st.delete(t));for(const t in i){const s=!!i[t];s===this.st.has(t)||this.nt?.has(t)||(s?(r.add(t),this.st.add(t)):(r.remove(t),this.st.delete(t)));}return E}});
 
 /**
  * @license
@@ -1365,7 +1372,7 @@ __decorate([
     r$2()
 ], Ripple$1.prototype, "pressed", void 0);
 __decorate([
-    e$2('.surface')
+    e$3('.surface')
 ], Ripple$1.prototype, "mdRoot", void 0);
 
 /**
@@ -2329,7 +2336,7 @@ let IconButton$1 = class IconButton extends iconButtonBaseClass$1 {
         }
     }
     render() {
-        const tag = this.href ? i$1 `div` : i$1 `button`;
+        const tag = this.href ? i$2 `div` : i$2 `button`;
         // Needed for closure conformance
         const { ariaLabel, ariaHasPopup, ariaExpanded } = this;
         const hasToggledAriaLabel = ariaLabel && this.ariaLabelSelected;
@@ -4424,14 +4431,14 @@ let ListItemEl$1 = class ListItemEl extends listItemBaseClass$1 {
         let tag;
         switch (this.type) {
             case 'link':
-                tag = i$1 `a`;
+                tag = i$2 `a`;
                 break;
             case 'button':
-                tag = i$1 `button`;
+                tag = i$2 `button`;
                 break;
             default:
             case 'text':
-                tag = i$1 `li`;
+                tag = i$2 `li`;
                 break;
         }
         const isInteractive = this.type !== 'text';
@@ -4545,7 +4552,7 @@ __decorate([
     n$3()
 ], ListItemEl$1.prototype, "target", void 0);
 __decorate([
-    e$2('.list-item')
+    e$3('.list-item')
 ], ListItemEl$1.prototype, "listItemRoot", void 0);
 
 /**
@@ -4665,7 +4672,7 @@ OscdElevation.styles = [styles$H];
  * @license
  * Copyright 2018 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
- */const n="important",i=" !"+n,o$1=e$4(class extends i$2{constructor(t){if(super(t),t.type!==t$1.ATTRIBUTE||"style"!==t.name||t.strings?.length>2)throw Error("The `styleMap` directive must be used in the `style` attribute and must be the only part in the attribute.")}render(t){return Object.keys(t).reduce((e,r)=>{const s=t[r];return null==s?e:e+`${r=r.includes("-")?r:r.replace(/(?:^(webkit|moz|ms|o)|)(?=[A-Z])/g,"-$&").toLowerCase()}:${s};`},"")}update(e,[r]){const{style:s}=e.element;if(void 0===this.ft)return this.ft=new Set(Object.keys(r)),this.render(r);for(const t of this.ft)null==r[t]&&(this.ft.delete(t),t.includes("-")?s.removeProperty(t):s[t]=null);for(const t in r){const e=r[t];if(null!=e){this.ft.add(t);const r="string"==typeof e&&e.endsWith(i);t.includes("-")||r?s.setProperty(t,r?e.slice(0,-11):e,r?n:""):s[t]=e;}}return E}});
+ */const n="important",i=" !"+n,o$1=e$1(class extends i$1{constructor(t$1){if(super(t$1),t$1.type!==t.ATTRIBUTE||"style"!==t$1.name||t$1.strings?.length>2)throw Error("The `styleMap` directive must be used in the `style` attribute and must be the only part in the attribute.")}render(t){return Object.keys(t).reduce((e,r)=>{const s=t[r];return null==s?e:e+`${r=r.includes("-")?r:r.replace(/(?:^(webkit|moz|ms|o)|)(?=[A-Z])/g,"-$&").toLowerCase()}:${s};`},"")}update(e,[r]){const{style:s}=e.element;if(void 0===this.ft)return this.ft=new Set(Object.keys(r)),this.render(r);for(const t of this.ft)null==r[t]&&(this.ft.delete(t),t.includes("-")?s.removeProperty(t):s[t]=null);for(const t in r){const e=r[t];if(null!=e){this.ft.add(t);const r="string"==typeof e&&e.endsWith(i);t.includes("-")||r?s.setProperty(t,r?e.slice(0,-11):e,r?n:""):s[t]=e;}}return E}});
 
 /**
  * @license
@@ -6449,10 +6456,10 @@ let Menu$1 = class Menu extends i$3 {
     }
 };
 __decorate([
-    e$2('.menu')
+    e$3('.menu')
 ], Menu$1.prototype, "surfaceEl", void 0);
 __decorate([
-    e$2('slot')
+    e$3('slot')
 ], Menu$1.prototype, "slotEl", void 0);
 __decorate([
     n$3()
@@ -6812,14 +6819,14 @@ let MenuItemEl$1 = class MenuItemEl extends menuItemBaseClass$1 {
         let tag;
         switch (this.menuItemController.tagName) {
             case 'a':
-                tag = i$1 `a`;
+                tag = i$2 `a`;
                 break;
             case 'button':
-                tag = i$1 `button`;
+                tag = i$2 `button`;
                 break;
             default:
             case 'li':
-                tag = i$1 `li`;
+                tag = i$2 `li`;
                 break;
         }
         // TODO(b/265339866): announce "button"/"link" inside of a list item. Until
@@ -6914,7 +6921,7 @@ __decorate([
     n$3({ type: Boolean })
 ], MenuItemEl$1.prototype, "selected", void 0);
 __decorate([
-    e$2('.list-item')
+    e$3('.list-item')
 ], MenuItemEl$1.prototype, "listItemRoot", void 0);
 __decorate([
     o$3({ slot: 'headline' })
@@ -7514,7 +7521,7 @@ __decorate([
     r$2()
 ], Checkbox$1.prototype, "prevIndeterminate", void 0);
 __decorate([
-    e$2('input')
+    e$3('input')
 ], Checkbox$1.prototype, "input", void 0);
 
 /**
@@ -9046,7 +9053,7 @@ function localstorage(opts = {}) {
  * @license
  * Copyright 2020 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
- */const l=e$4(class extends i$2{constructor(r$1){if(super(r$1),r$1.type!==t$1.PROPERTY&&r$1.type!==t$1.ATTRIBUTE&&r$1.type!==t$1.BOOLEAN_ATTRIBUTE)throw Error("The `live` directive is not allowed on child or event bindings");if(!r(r$1))throw Error("`live` bindings can only contain a single expression")}render(r){return r}update(i,[t]){if(t===E||t===A)return t;const o=i.element,l=i.name;if(i.type===t$1.PROPERTY){if(t===o[l])return E}else if(i.type===t$1.BOOLEAN_ATTRIBUTE){if(!!t===o.hasAttribute(l))return E}else if(i.type===t$1.ATTRIBUTE&&o.getAttribute(l)===t+"")return E;return p(i),t}});
+ */const l=e$1(class extends i$1{constructor(r$1){if(super(r$1),r$1.type!==t.PROPERTY&&r$1.type!==t.ATTRIBUTE&&r$1.type!==t.BOOLEAN_ATTRIBUTE)throw Error("The `live` directive is not allowed on child or event bindings");if(!r(r$1))throw Error("`live` bindings can only contain a single expression")}render(r){return r}update(i,[t$1]){if(t$1===E||t$1===A)return t$1;const o=i.element,l=i.name;if(i.type===t.PROPERTY){if(t$1===o[l])return E}else if(i.type===t.BOOLEAN_ATTRIBUTE){if(!!t$1===o.hasAttribute(l))return E}else if(i.type===t.ATTRIBUTE&&o.getAttribute(l)===t$1+"")return E;return p(i),t$1}});
 
 /**
  * @license
@@ -10204,10 +10211,10 @@ __decorate([
     r$2()
 ], TextField$1.prototype, "nativeErrorText", void 0);
 __decorate([
-    e$2('.input')
+    e$3('.input')
 ], TextField$1.prototype, "inputOrTextarea", void 0);
 __decorate([
-    e$2('.field')
+    e$3('.field')
 ], TextField$1.prototype, "field", void 0);
 __decorate([
     o$3({ slot: 'leading-icon' })
@@ -10227,7 +10234,7 @@ __decorate([
 class OutlinedTextField extends TextField$1 {
     constructor() {
         super(...arguments);
-        this.fieldTag = i$1 `md-outlined-field`;
+        this.fieldTag = i$2 `md-outlined-field`;
     }
 }
 
@@ -10687,13 +10694,13 @@ __decorate([
     r$2()
 ], Field$1.prototype, "disableTransitions", void 0);
 __decorate([
-    e$2('.label.floating')
+    e$3('.label.floating')
 ], Field$1.prototype, "floatingLabelEl", void 0);
 __decorate([
-    e$2('.label.resting')
+    e$3('.label.resting')
 ], Field$1.prototype, "restingLabelEl", void 0);
 __decorate([
-    e$2('.container')
+    e$3('.container')
 ], Field$1.prototype, "containerEl", void 0);
 
 /**
@@ -10773,7 +10780,7 @@ OscdOutlinedField$1.styles = [styles$z, styles$A];
 class OscdOutlinedSearchField extends ScopedElementsMixin(OutlinedSearchField) {
     constructor() {
         super(...arguments);
-        this.fieldTag = i$1 `oscd-outlined-field`;
+        this.fieldTag = i$2 `oscd-outlined-field`;
     }
 }
 OscdOutlinedSearchField.scopedElements = {
@@ -12260,7 +12267,7 @@ __decorate([
     n$3({ type: String, reflect: true })
 ], PluginsMenu.prototype, "open", void 0);
 __decorate([
-    e$2('oscd-menu')
+    e$3('oscd-menu')
 ], PluginsMenu.prototype, "menu", void 0);
 PluginsMenu = __decorate([
     localized()
@@ -12435,7 +12442,7 @@ __decorate([
     n$3({ type: Boolean, attribute: 'has-icon', reflect: true })
 ], Button$1.prototype, "hasIcon", void 0);
 __decorate([
-    e$2('.button')
+    e$3('.button')
 ], Button$1.prototype, "buttonElement", void 0);
 __decorate([
     o$3({ slot: 'icon', flatten: true })
@@ -12750,7 +12757,7 @@ __decorate([
     n$3({ type: String, reflect: true })
 ], FilesMenu.prototype, "locale", void 0);
 __decorate([
-    e$2('#fileMenu')
+    e$3('#fileMenu')
 ], FilesMenu.prototype, "menu", void 0);
 FilesMenu = __decorate([
     localized()
@@ -13852,17 +13859,17 @@ __decorate([
     r$2()
 ], OscdShell.prototype, "xmlEditor", void 0);
 __decorate([
-    e$2('plugins-menu')
+    e$3('plugins-menu')
 ], OscdShell.prototype, "pluginsMenu", void 0);
 __decorate([
-    e$2('editor-plugins-panel')
+    e$3('editor-plugins-panel')
 ], OscdShell.prototype, "editorPluginsPanel", void 0);
 __decorate([
     n$2({ slot: 'landing-page' })
 ], OscdShell.prototype, "_landingPageNodes", void 0);
 OscdShell = __decorate([
     localized(),
-    t('oscd-shell')
+    t$1('oscd-shell')
 ], OscdShell);
 
 function newOpenEvent(doc, docName) {
@@ -14515,22 +14522,22 @@ __decorate([
     n$3({ type: Boolean, attribute: 'no-focus-trap' })
 ], Dialog$1.prototype, "noFocusTrap", void 0);
 __decorate([
-    e$2('dialog')
+    e$3('dialog')
 ], Dialog$1.prototype, "dialog", void 0);
 __decorate([
-    e$2('.scrim')
+    e$3('.scrim')
 ], Dialog$1.prototype, "scrim", void 0);
 __decorate([
-    e$2('.container')
+    e$3('.container')
 ], Dialog$1.prototype, "container", void 0);
 __decorate([
-    e$2('.headline')
+    e$3('.headline')
 ], Dialog$1.prototype, "headline", void 0);
 __decorate([
-    e$2('.content')
+    e$3('.content')
 ], Dialog$1.prototype, "content", void 0);
 __decorate([
-    e$2('.actions')
+    e$3('.actions')
 ], Dialog$1.prototype, "actions", void 0);
 __decorate([
     r$2()
@@ -14539,16 +14546,16 @@ __decorate([
     r$2()
 ], Dialog$1.prototype, "isAtScrollBottom", void 0);
 __decorate([
-    e$2('.scroller')
+    e$3('.scroller')
 ], Dialog$1.prototype, "scroller", void 0);
 __decorate([
-    e$2('.top.anchor')
+    e$3('.top.anchor')
 ], Dialog$1.prototype, "topAnchor", void 0);
 __decorate([
-    e$2('.bottom.anchor')
+    e$3('.bottom.anchor')
 ], Dialog$1.prototype, "bottomAnchor", void 0);
 __decorate([
-    e$2('.focus-trap')
+    e$3('.focus-trap')
 ], Dialog$1.prototype, "firstFocusTrap", void 0);
 __decorate([
     r$2()
@@ -15184,7 +15191,7 @@ __decorate([
     n$3()
 ], Radio.prototype, "value", void 0);
 __decorate([
-    e$2('.container')
+    e$3('.container')
 ], Radio.prototype, "container", void 0);
 
 /**
@@ -15411,7 +15418,7 @@ OscdOutlinedField.styles = [styles$z, styles$A];
 class OscdOutlinedTextField extends ScopedElementsMixin(OutlinedTextField) {
     constructor() {
         super(...arguments);
-        this.fieldTag = i$1 `oscd-outlined-field`;
+        this.fieldTag = i$2 `oscd-outlined-field`;
     }
 }
 OscdOutlinedTextField.styles = [styles$B, styles$C];
@@ -15555,13 +15562,13 @@ __decorate([
     r$2()
 ], OscdMenuNewFile.prototype, "isFormValid", void 0);
 __decorate([
-    e$2('oscd-dialog')
+    e$3('oscd-dialog')
 ], OscdMenuNewFile.prototype, "dialog", void 0);
 __decorate([
-    e$2('oscd-outlined-textfield')
+    e$3('oscd-outlined-textfield')
 ], OscdMenuNewFile.prototype, "newProjectName", void 0);
 __decorate([
-    e$2('oscd-radio[tabindex="0"]')
+    e$3('oscd-radio[tabindex="0"]')
 ], OscdMenuNewFile.prototype, "selectedVersion", void 0);
 
 /**
@@ -16547,7 +16554,7 @@ __decorate([
     r$2()
 ], Ripple.prototype, "pressed", void 0);
 __decorate([
-    e$2('.surface')
+    e$3('.surface')
 ], Ripple.prototype, "mdRoot", void 0);
 
 /**
@@ -17575,7 +17582,7 @@ __decorate([
     r$2()
 ], Checkbox.prototype, "prevIndeterminate", void 0);
 __decorate([
-    e$2('input')
+    e$3('input')
 ], Checkbox.prototype, "input", void 0);
 
 /**
@@ -17963,7 +17970,7 @@ __decorate([
     n$3()
 ], Switch.prototype, "value", void 0);
 __decorate([
-    e$2('input')
+    e$3('input')
 ], Switch.prototype, "input", void 0);
 
 /**
@@ -18141,7 +18148,7 @@ __decorate([
     r$2()
 ], SclCheckbox.prototype, "null", null);
 __decorate([
-    e$2('.nullswitch.element')
+    e$3('.nullswitch.element')
 ], SclCheckbox.prototype, "nullSwitch", void 0);
 
 /**
@@ -18482,13 +18489,13 @@ __decorate([
     r$2()
 ], Field.prototype, "disableTransitions", void 0);
 __decorate([
-    e$2('.label.floating')
+    e$3('.label.floating')
 ], Field.prototype, "floatingLabelEl", void 0);
 __decorate([
-    e$2('.label.resting')
+    e$3('.label.resting')
 ], Field.prototype, "restingLabelEl", void 0);
 __decorate([
-    e$2('.container')
+    e$3('.container')
 ], Field.prototype, "containerEl", void 0);
 
 /**
@@ -20545,10 +20552,10 @@ Menu.scopedElements = {
     'md-elevation': MdElevation,
 };
 __decorate([
-    e$2('.menu')
+    e$3('.menu')
 ], Menu.prototype, "surfaceEl", void 0);
 __decorate([
-    e$2('slot')
+    e$3('slot')
 ], Menu.prototype, "slotEl", void 0);
 __decorate([
     n$3()
@@ -21672,13 +21679,13 @@ __decorate([
     r$2()
 ], Select.prototype, "defaultFocus", void 0);
 __decorate([
-    e$2('.field')
+    e$3('.field')
 ], Select.prototype, "field", void 0);
 __decorate([
-    e$2('md-menu')
+    e$3('md-menu')
 ], Select.prototype, "menu", void 0);
 __decorate([
-    e$2('#label')
+    e$3('#label')
 ], Select.prototype, "labelEl", void 0);
 __decorate([
     o$3({ slot: 'leading-icon', flatten: true })
@@ -21737,7 +21744,7 @@ const styles$i = i$4 `:host{color:unset;min-width:210px;display:flex}.field{curs
 class MdFilledSelect extends Select {
     constructor() {
         super(...arguments);
-        this.fieldTag = i$1 `md-filled-field`;
+        this.fieldTag = i$2 `md-filled-field`;
     }
 }
 MdFilledSelect.scopedElements = {
@@ -22268,7 +22275,7 @@ __decorate([
     n$3()
 ], SelectOptionEl.prototype, "value", void 0);
 __decorate([
-    e$2('.list-item')
+    e$3('.list-item')
 ], SelectOptionEl.prototype, "listItemRoot", void 0);
 __decorate([
     o$3({ slot: 'headline' })
@@ -22483,10 +22490,10 @@ __decorate([
     r$2()
 ], SclSelect.prototype, "null", null);
 __decorate([
-    e$2('.nullswitch.element')
+    e$3('.nullswitch.element')
 ], SclSelect.prototype, "nullSwitch", void 0);
 __decorate([
-    e$2('.input.element')
+    e$3('.input.element')
 ], SclSelect.prototype, "selectInput", void 0);
 
 /**
@@ -23346,10 +23353,10 @@ __decorate([
     r$2()
 ], TextField.prototype, "nativeErrorText", void 0);
 __decorate([
-    e$2('.input')
+    e$3('.input')
 ], TextField.prototype, "inputOrTextarea", void 0);
 __decorate([
-    e$2('.field')
+    e$3('.field')
 ], TextField.prototype, "field", void 0);
 __decorate([
     o$3({ slot: 'leading-icon' })
@@ -23384,7 +23391,7 @@ const styles$e = i$4 `:host{display:inline-flex;outline:none;resize:both;text-al
 class MdFilledTextField extends TextField {
     constructor() {
         super(...arguments);
-        this.fieldTag = i$1 `md-filled-field`;
+        this.fieldTag = i$2 `md-filled-field`;
     }
 }
 MdFilledTextField.scopedElements = {
@@ -23612,7 +23619,7 @@ class IconButton extends iconButtonBaseClass {
         }
     }
     render() {
-        const tag = this.href ? i$1 `div` : i$1 `button`;
+        const tag = this.href ? i$2 `div` : i$2 `button`;
         // Needed for closure conformance
         const { ariaLabel, ariaHasPopup, ariaExpanded } = this;
         const hasToggledAriaLabel = ariaLabel && this.ariaLabelSelected;
@@ -23880,14 +23887,14 @@ class MenuItemEl extends menuItemBaseClass {
         let tag;
         switch (this.menuItemController.tagName) {
             case 'a':
-                tag = i$1 `a`;
+                tag = i$2 `a`;
                 break;
             case 'button':
-                tag = i$1 `button`;
+                tag = i$2 `button`;
                 break;
             default:
             case 'li':
-                tag = i$1 `li`;
+                tag = i$2 `li`;
                 break;
         }
         // TODO(b/265339866): announce "button"/"link" inside of a list item. Until
@@ -23987,7 +23994,7 @@ __decorate([
     n$3({ type: Boolean })
 ], MenuItemEl.prototype, "selected", void 0);
 __decorate([
-    e$2('.list-item')
+    e$3('.list-item')
 ], MenuItemEl.prototype, "listItemRoot", void 0);
 __decorate([
     o$3({ slot: 'headline' })
@@ -24277,13 +24284,13 @@ __decorate([
     r$2()
 ], SclTextField.prototype, "null", null);
 __decorate([
-    e$2('.nullswitch.element')
+    e$3('.nullswitch.element')
 ], SclTextField.prototype, "nullSwitch", void 0);
 __decorate([
-    e$2('.multipliers')
+    e$3('.multipliers')
 ], SclTextField.prototype, "multiplierMenu", void 0);
 __decorate([
-    e$2('.input.element')
+    e$3('.input.element')
 ], SclTextField.prototype, "textField", void 0);
 
 /**
@@ -24523,14 +24530,14 @@ class ListItemEl extends listItemBaseClass {
         let tag;
         switch (this.type) {
             case 'link':
-                tag = i$1 `a`;
+                tag = i$2 `a`;
                 break;
             case 'button':
-                tag = i$1 `button`;
+                tag = i$2 `button`;
                 break;
             default:
             case 'text':
-                tag = i$1 `li`;
+                tag = i$2 `li`;
                 break;
         }
         const isInteractive = this.type !== 'text';
@@ -24642,7 +24649,7 @@ __decorate([
     n$3({ type: Boolean })
 ], ListItemEl.prototype, "activated", void 0);
 __decorate([
-    e$2('.list-item')
+    e$3('.list-item')
 ], ListItemEl.prototype, "listItemRoot", void 0);
 
 /**
@@ -24770,7 +24777,7 @@ const styles$6 = i$4 `:host{--_caret-color: var(--md-outlined-text-field-caret-c
 class MdOutlinedTextField extends TextField {
     constructor() {
         super(...arguments);
-        this.fieldTag = i$1 `md-outlined-field`;
+        this.fieldTag = i$2 `md-outlined-field`;
     }
 }
 MdOutlinedTextField.scopedElements = {
@@ -24848,7 +24855,7 @@ __decorate([
     r$2()
 ], FilterListBase.prototype, "searchRegex", void 0);
 __decorate([
-    e$2('md-outlined-text-field')
+    e$3('md-outlined-text-field')
 ], FilterListBase.prototype, "searchInput", void 0);
 __decorate([
     r$2()
@@ -25739,22 +25746,22 @@ __decorate([
     n$3({ type: Boolean, attribute: 'no-focus-trap' })
 ], Dialog.prototype, "noFocusTrap", void 0);
 __decorate([
-    e$2('dialog')
+    e$3('dialog')
 ], Dialog.prototype, "dialog", void 0);
 __decorate([
-    e$2('.scrim')
+    e$3('.scrim')
 ], Dialog.prototype, "scrim", void 0);
 __decorate([
-    e$2('.container')
+    e$3('.container')
 ], Dialog.prototype, "container", void 0);
 __decorate([
-    e$2('.headline')
+    e$3('.headline')
 ], Dialog.prototype, "headline", void 0);
 __decorate([
-    e$2('.content')
+    e$3('.content')
 ], Dialog.prototype, "content", void 0);
 __decorate([
-    e$2('.actions')
+    e$3('.actions')
 ], Dialog.prototype, "actions", void 0);
 __decorate([
     r$2()
@@ -25763,16 +25770,16 @@ __decorate([
     r$2()
 ], Dialog.prototype, "isAtScrollBottom", void 0);
 __decorate([
-    e$2('.scroller')
+    e$3('.scroller')
 ], Dialog.prototype, "scroller", void 0);
 __decorate([
-    e$2('.top.anchor')
+    e$3('.top.anchor')
 ], Dialog.prototype, "topAnchor", void 0);
 __decorate([
-    e$2('.bottom.anchor')
+    e$3('.bottom.anchor')
 ], Dialog.prototype, "bottomAnchor", void 0);
 __decorate([
-    e$2('.focus-trap')
+    e$3('.focus-trap')
 ], Dialog.prototype, "firstFocusTrap", void 0);
 __decorate([
     r$2()
@@ -26042,7 +26049,7 @@ __decorate([
     n$3({ reflect: true })
 ], Button.prototype, "value", void 0);
 __decorate([
-    e$2('.button')
+    e$3('.button')
 ], Button.prototype, "buttonElement", void 0);
 __decorate([
     o$3({ slot: 'icon', flatten: true })
@@ -78948,7 +78955,7 @@ __decorate([
     n$3()
 ], OscdTextEditor.prototype, "value", void 0);
 __decorate([
-    e$2('ace-editor')
+    e$3('ace-editor')
 ], OscdTextEditor.prototype, "aceEditor", void 0);
 
 function isCreateWizard(wizardType) {
@@ -79351,10 +79358,10 @@ __decorate([
     r$2()
 ], OscdSclDialogs.prototype, "editorMode", void 0);
 __decorate([
-    e$2('md-dialog')
+    e$3('md-dialog')
 ], OscdSclDialogs.prototype, "dialog", void 0);
 __decorate([
-    e$2('oscd-text-editor')
+    e$3('oscd-text-editor')
 ], OscdSclDialogs.prototype, "textEditor", void 0);
 __decorate([
     r$1('scl-text-field, scl-select, scl-checkbox, md-filled-textfield, md-filled-select')
@@ -79401,7 +79408,7 @@ __decorate([
     n$3({ type: Object })
 ], OscdBackgroundWizardEvents.prototype, "editor", void 0);
 __decorate([
-    e$2('oscd-scl-dialogs')
+    e$3('oscd-scl-dialogs')
 ], OscdBackgroundWizardEvents.prototype, "editDialog", void 0);
 
 //Lets resister the plugins into the shells scoped custome-element registry.
