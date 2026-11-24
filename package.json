@@ -36,7 +36,7 @@
     "@omicronenergy/oscd-menu-commons": "^0.0.1",
     "@omicronenergy/oscd-menu-open": "^0.0.6",
     "@omicronenergy/oscd-menu-save": "^0.0.2",
-    "@omicronenergy/oscd-shell": "^0.0.16",
+    "@omicronenergy/oscd-shell": "file:../../stee-re/oscd-shell",
     "@open-wc/scoped-elements": "^3.0.6",
     "@openenergytools/xml-schema-validator": "^0.0.1",
     "@openscd/oscd-api": "^0.1.6",

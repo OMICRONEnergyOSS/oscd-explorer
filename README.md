@@ -7,25 +7,28 @@ It starts with the OpenSCD host and plugin hub rather than a predefined plugin s
 
 `landing-page.js` supplies a custom `oscd-shell` landing page
 (`<oscd-explorer-landing-page slot="landing-page">` in `index.html`),
-replacing the shell's default welcome screen. Its **Distributions** card
-lists the six name/URL pairs in the locally maintained `distros.json`
-(copied into the bundle). Update that file when the community list changes;
-the list is not fetched from openscd.org. The **Further info** card links to
-other OpenSCD resources.
+replacing the shell's default welcome screen. Select **Distributions** to
+see the locally maintained entries in `distros.json` (copied into the
+bundle); update their names, descriptions, URLs and optional `icon` image
+URLs when the community list changes. Entries without an icon, or with an
+image that fails to load, use the generic distribution icon. The list is not
+fetched from openscd.org.
 
-The **Getting started** section shows three steps: explore, add plugins, and
-open a project. The "Start exploring" action opens an unsaved document named
-`new-project.scd` to reveal the plugin rail and the Plugin Hub; plugin picks
-persist to `localStorage` via `oscd-background-plugin-config`. Returning
-visitors (detected via `localStorage['plugins']`) keep the steps but see
-quick-access actions below them. Organization logos for the bottom of the
-page are deferred until approved image assets are available.
+Select **Custom build** for getting-started guidance and actions to open an
+existing file or create one using the New File dialog. Open or create a file
+to reach the Plugin Hub. Plugin selections persist through
+`oscd-background-plugin-config`. The landing page separately remembers the
+last selected starting point and the last distribution opened in browser
+localStorage. On return, Custom build shows a compact view and Distributions
+highlights the last opened distribution. `contributors.json` contains each
+contributor's visible `name`, image `icon` URL and destination `url`. Its
+current logos are provisional and should be replaced with approved assets.
 
 # Security
 
-We do NOT upload any information of any sort.
-You browser is only downloading never uploading anything.
-So when you connect to the [Open SCD Explorer](https://omicronenergyoss.github.io/oscd-explorer/) you download/update all the JavaScript files to run the editor in your browser.
+The editor runs in your browser. The landing page loads provisional logos
+from external hosts, which receive your browser's IP address. Image requests
+do not include a referrer. Logo availability depends on those hosts.
 
 # Adding a plugin
 

@@ -60,6 +60,7 @@ export default [
               "omicronenergy.plugins.json",
               "omicronenergy.png",
               "distros.json",
+              "contributors.json",
             ],
             dest: `${outputDir}/`,
           },

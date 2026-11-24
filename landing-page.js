@@ -1,133 +1,166 @@
 import { LitElement, html, css, nothing } from "lit";
-import { newOpenEvent } from "@openscd/oscd-api/utils.js";
 
-/** Local, static list of known OpenSCD distributions. Curated by hand for
- * now; a future `oscd-registry` package is expected to host this file so it
- * can be fetched from a shared location instead of duplicated per distro. */
 const DISTROS_JSON_URL = "./distros.json";
-
-/** OpenSCD project site: the canonical, up-to-date list of distributions
- * lives here in case this static copy falls behind. */
+const CONTRIBUTORS_JSON_URL = "./contributors.json";
 const OPENSCD_GET_URL = "https://openscd.org/get.html";
+const VIEW_STORAGE_KEY = "oscd-explorer:landing-view";
+const DISTRO_STORAGE_KEY = "oscd-explorer:last-distribution";
 
-const FURTHER_INFO_LINKS = [
-  { name: "OpenSCD.org", url: "https://openscd.org" },
-  {
-    name: "oscd-explorer on GitHub",
-    url: "https://github.com/OMICRONEnergyOSS/oscd-explorer",
-  },
-  {
-    name: "Release notes",
-    url: "https://github.com/OMICRONEnergyOSS/oscd-explorer/releases",
-  },
-];
+const cubeIcon = html`
+  <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
+    <path d="M24 4 43 14v20L24 44 5 34V14L24 4Z M5 14l19 11 19-11M24 25v19" />
+  </svg>
+`;
+const fileIcon = html`
+  <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
+    <path d="M12 4h19l9 9v31H12V4Z M31 4v10h9M19 23h15M19 30h15M19 37h10" />
+  </svg>
+`;
 
-/** localStorage key that `oscd-background-plugin-config` writes plugin
- * selections to. Its presence means the user has already customized their
- * plugin set at least once. */
-const PLUGIN_STORAGE_KEY = "plugins";
-
-/** Name given to the throw-away document opened so the user can reach the
- * plugin rail (editor plugins, incl. "Plugin Hub", only render once a
- * document is loaded). Kept deliberately explanatory. */
-const STARTER_DOC_NAME = "new-project.scd";
-
-const starterSclDocString = `<?xml version="1.0" encoding="UTF-8"?>
-<SCL version="2007" revision="B" xmlns="http://www.iec.ch/61850/2003/SCL">
-</SCL>`;
-
-/** True once the user has changed their plugin selection at least once via
- * Plugin Hub (i.e. `oscd-background-plugin-config` has persisted something). */
-function readHasCustomizations() {
+function readStorage(key) {
   try {
-    const raw = localStorage.getItem(PLUGIN_STORAGE_KEY);
-    const parsed = raw ? JSON.parse(raw) : [];
-    return Array.isArray(parsed) && parsed.length > 0;
-  } catch {
-    return false;
+    return localStorage.getItem(key);
+  } catch (error) {
+    console.warn(`Could not read landing page preference ${key}:`, error);
+    return null;
   }
+}
+
+function writeStorage(key, value) {
+  try {
+    localStorage.setItem(key, value);
+  } catch (error) {
+    console.warn(`Could not save landing page preference ${key}:`, error);
+  }
+}
+
+async function loadJson(url) {
+  const response = await fetch(new URL(url, import.meta.url));
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}`);
+  }
+  return response.json();
 }
 
 export class OscdExplorerLandingPage extends LitElement {
   static properties = {
-    hasCustomizations: { state: true },
+    selectedView: { state: true },
+    lastDistro: { state: true },
+    returningCustomBuild: { state: true },
     distrosStatus: { state: true },
     distros: { state: true },
+    contributorsStatus: { state: true },
+    contributors: { state: true },
+    failedIcons: { state: true },
   };
 
   constructor() {
     super();
-    this.hasCustomizations = false;
+    this.selectedView = null;
+    this.lastDistro = null;
+    this.returningCustomBuild = false;
     this.distrosStatus = "loading";
     this.distros = [];
+    this.contributorsStatus = "loading";
+    this.contributors = [];
+    this.failedIcons = new Set();
   }
 
   connectedCallback() {
     super.connectedCallback();
-    this.hasCustomizations = readHasCustomizations();
+    const savedView = readStorage(VIEW_STORAGE_KEY);
+    this.selectedView =
+      savedView === "distros" || savedView === "custom" ? savedView : null;
+    this.returningCustomBuild = savedView === "custom";
+    this.lastDistro = readStorage(DISTRO_STORAGE_KEY);
     this.loadDistros();
+    this.loadContributors();
   }
 
-  /** Loads the static, hand-curated distros list shipped alongside this
-   * plugin. Expected to be replaced by a fetch against a shared
-   * `oscd-registry` package once that exists (see DISTROS_JSON_URL). */
   async loadDistros() {
+    this.distrosStatus = "loading";
     try {
-      const response = await fetch(new URL(DISTROS_JSON_URL, import.meta.url));
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      this.distros = await response.json();
+      this.distros = await loadJson(DISTROS_JSON_URL);
       this.distrosStatus = "loaded";
-    } catch (err) {
-      console.warn(`Could not load ${DISTROS_JSON_URL}:`, err);
+    } catch (error) {
+      console.warn(`Could not load ${DISTROS_JSON_URL}:`, error);
       this.distrosStatus = "error";
     }
   }
 
-  getOscdShell() {
-    return this.closest("oscd-shell");
+  async loadContributors() {
+    this.contributorsStatus = "loading";
+    try {
+      this.contributors = await loadJson(CONTRIBUTORS_JSON_URL);
+      this.contributorsStatus = "loaded";
+    } catch (error) {
+      console.warn(`Could not load ${CONTRIBUTORS_JSON_URL}:`, error);
+      this.contributorsStatus = "error";
+    }
   }
 
-  getMenuPlugins() {
-    const oscdShell = this.getOscdShell();
-    if (!oscdShell) return [];
-    return oscdShell.plugins.menu.filter(
-      (plugin) => plugin.requireDoc !== true,
+  handleIconError(event) {
+    const url = event.currentTarget.getAttribute("src");
+    console.warn(`Could not load image ${url}`);
+    this.failedIcons = new Set([...this.failedIcons, url]);
+  }
+
+  selectView(view) {
+    this.selectedView = view;
+    writeStorage(VIEW_STORAGE_KEY, view);
+  }
+
+  selectDistro(url) {
+    this.lastDistro = url;
+    writeStorage(DISTRO_STORAGE_KEY, url);
+  }
+
+  runMenuPlugin(tagName) {
+    const shell = this.closest("oscd-shell");
+    const plugin = shell?.plugins.menu.find(
+      (item) => item.tagName === tagName && item.requireDoc !== true,
     );
+    const instance = plugin && shell.shadowRoot?.querySelector(plugin.tagName);
+    if (!instance || typeof instance.run !== "function") {
+      console.error(`Could not run menu plugin ${tagName}`);
+      return;
+    }
+    instance.run();
   }
 
-  handleMenuPluginClick(plugin) {
-    const oscdShell = this.getOscdShell();
-    const instance = oscdShell?.shadowRoot.querySelector(plugin.tagName);
-    instance?.run();
-  }
-
-  handleStartExploring() {
-    const doc = new DOMParser().parseFromString(
-      starterSclDocString,
-      "application/xml",
-    );
-    this.dispatchEvent(newOpenEvent(doc, STARTER_DOC_NAME));
-  }
-
-  renderDistrosPanel() {
+  renderChoice(view, title, description, icon) {
+    const selected = this.selectedView === view;
     return html`
-      <section class="panel distros-panel">
-        <div class="panel-heading">
-          <span class="panel-icon" aria-hidden="true">
-            <svg viewBox="0 0 48 48" fill="none">
-              <path d="M24 4 43 14v20L24 44 5 34V14L24 4Z M5 14l19 11 19-11M24 25v19" />
-            </svg>
-          </span>
-          <div>
-            <h2>Distributions</h2>
-            <p class="panel-intro">Choose a distribution that fits your workflow.</p>
-          </div>
-        </div>
+      <button
+        class="choice ${view} ${selected ? "selected" : ""}"
+        type="button"
+        aria-pressed="${selected}"
+        aria-controls="choice-content"
+        @click=${() => this.selectView(view)}
+      >
+        <span class="choice-icon">${icon}</span>
+        <span class="choice-text">
+          <strong>${title}</strong>
+          <span>${description}</span>
+        </span>
+        <span class="choice-art">${icon}</span>
+      </button>
+    `;
+  }
+
+  renderDistros() {
+    return html`
+      <section class="expanded" aria-labelledby="distros-heading">
+        <h2 id="distros-heading">Choose a distribution</h2>
+        <p class="section-intro">
+          Start with a curated OpenSCD setup. You can explore the options before
+          opening one.
+        </p>
         ${this.distrosStatus === "loading"
-          ? html`<p class="hint">Loading…</p>`
+          ? html`<p role="status">Loading distributions…</p>`
           : nothing}
         ${this.distrosStatus === "error"
-          ? html`<p class="hint">
+          ? html`<p role="status">
               Could not load the list right now. See it directly on
               <a
                 href="${OPENSCD_GET_URL}"
@@ -138,166 +171,215 @@ export class OscdExplorerLandingPage extends LitElement {
             </p>`
           : nothing}
         ${this.distrosStatus === "loaded"
-          ? html`<ul class="link-list">
-              ${this.distros.map(
-                (distro) => html`
-                  <li>
-                    <a
-                      href="${distro.url}"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      >${distro.name} →</a
-                    >
-                  </li>
-                `,
-              )}
-            </ul>`
+          ? html`
+              <ul class="distros-list">
+                ${this.distros.map(
+                  (distro) => html`
+                    <li>
+                      <a
+                        class="distro-card ${this.lastDistro === distro.url
+                          ? "last-selected"
+                          : ""}"
+                        href="${distro.url}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        @click=${() => this.selectDistro(distro.url)}
+                      >
+                        <span class="distro-heading">
+                          ${distro.icon && !this.failedIcons.has(distro.icon)
+                            ? html`<img
+                                src="${distro.icon}"
+                                alt=""
+                                referrerpolicy="no-referrer"
+                                @error=${this.handleIconError}
+                              />`
+                            : cubeIcon}
+                          <strong>${distro.name}</strong>
+                        </span>
+                        ${this.lastDistro === distro.url
+                          ? html`<span class="visually-hidden"
+                              >Last opened distribution</span
+                            >`
+                          : nothing}
+                        <span>${distro.description}</span>
+                      </a>
+                    </li>
+                  `,
+                )}
+              </ul>
+            `
           : nothing}
-        <svg class="panel-art" viewBox="0 0 160 160" fill="none" aria-hidden="true">
-          <path d="M80 5 150 45v75L80 155 10 120V45L80 5Z M10 45l70 42 70-42M80 87v68" />
-        </svg>
       </section>
     `;
   }
 
-  static renderFurtherInfoPanel() {
+  renderCustomBuild() {
     return html`
-      <section class="panel further-info-panel">
-        <div class="panel-heading">
-          <span class="panel-icon" aria-hidden="true">
-            <svg viewBox="0 0 48 48" fill="none">
-              <path d="M12 4h19l9 9v31H12V4Z M31 4v10h9M19 23h15M19 30h15M19 37h10" />
-            </svg>
-          </span>
-          <div>
-            <h2>Further info</h2>
-            <p class="panel-intro">Explore related tools and resources.</p>
-          </div>
+      <section class="expanded custom-content" aria-labelledby="custom-heading">
+        ${this.returningCustomBuild
+          ? html`
+              <h2 id="custom-heading">Custom build</h2>
+              <p class="section-intro">
+                Open an existing file or create a new project to continue.
+              </p>
+            `
+          : html`
+              <h2 id="custom-heading">Getting started</h2>
+              <p class="section-intro">
+                No distribution quite fits? Set up your own workspace in a few
+                simple steps. Open or create a file to access the Plugin Hub.
+                Your plugin selection is saved in this browser.
+              </p>
+              <ol class="steps">
+                <li>
+                  <span class="step-number">1</span>
+                  <div>
+                    <h3>Start exploring</h3>
+                    <p>
+                      Get familiar with the interface and try the built-in
+                      plugins.
+                    </p>
+                  </div>
+                </li>
+                <li>
+                  <span class="step-number">2</span>
+                  <div>
+                    <h3>Add plugins</h3>
+                    <p>
+                      Use the Plugin Hub to choose tools that match your
+                      workflow.
+                    </p>
+                  </div>
+                </li>
+                <li>
+                  <span class="step-number">3</span>
+                  <div>
+                    <h3>Open an existing project</h3>
+                    <p>
+                      Open an SCL file to start viewing, editing and validating
+                      your data.
+                    </p>
+                  </div>
+                </li>
+              </ol>
+            `}
+        <div class="quick-actions">
+          <button
+            type="button"
+            class="cta"
+            @click=${() => this.runMenuPlugin("oscd-menu-open")}
+          >
+            Open file
+          </button>
+          <button
+            type="button"
+            class="cta secondary"
+            @click=${() => this.runMenuPlugin("oscd-menu-new")}
+          >
+            Create File
+          </button>
         </div>
-        <ul class="link-list">
-          ${FURTHER_INFO_LINKS.map(
-            (link) => html`
-              <li>
-                <a href="${link.url}" target="_blank" rel="noopener noreferrer"
-                  >${link.name} →</a
-                >
-              </li>
-            `,
-          )}
-        </ul>
-        <svg class="panel-art" viewBox="0 0 160 160" fill="none" aria-hidden="true">
-          <path d="M32 4h76l32 32v120H32V4Z M108 4v33h32M51 67h70M51 88h70M51 109h47" />
-        </svg>
-      </section>
-    `;
-  }
-
-  renderFirstTimeActions() {
-    return html`
-      <div class="quick-actions">
-        <button class="cta" @click=${() => this.handleStartExploring()}>
-          Start exploring
-        </button>
-        ${this.renderOpenFileAction()}
-      </div>
-      <p class="hint">
-        This opens a blank, unsaved document named
-        <code>${STARTER_DOC_NAME}</code> so you can reach the Plugin Hub.
-        Your plugin selection is saved in this browser.
-      </p>
-    `;
-  }
-
-  renderOpenFileAction() {
-    const openFilePlugin = this.getMenuPlugins().find(
-      (plugin) => plugin.tagName === "oscd-menu-open",
-    );
-    return openFilePlugin
-      ? html`<button
-          class="cta secondary"
-          @click=${() => this.handleMenuPluginClick(openFilePlugin)}
-        >
-          Open an existing project
-        </button>`
-      : nothing;
-  }
-
-  renderReturningActions() {
-    const menuPlugins = this.getMenuPlugins();
-    return html`
-      <div class="quick-actions">
-        ${menuPlugins.map(
-          (plugin) => html`
-            <button
-              class="cta secondary"
-              @click=${() => this.handleMenuPluginClick(plugin)}
-            >
-              ${plugin.name}
-            </button>
-          `,
-        )}
-        <button class="cta" @click=${() => this.handleStartExploring()}>
-          Continue Customizing Plugins
-        </button>
-      </div>
-      <p class="hint">Your plugin selection is saved in this browser.</p>
-    `;
-  }
-
-  renderGettingStartedSection() {
-    return html`
-      <section class="getting-started">
-        <h2>Getting started</h2>
-        <p class="section-intro">
-          No distribution quite fits? Set up your own workspace in a few simple steps.
-        </p>
-        <ol class="steps">
-          <li>
-            <span class="step-number" aria-hidden="true">1</span>
-            <div>
-              <h3>Start exploring</h3>
-              <p>Get familiar with the interface and try the built-in plugins.</p>
-            </div>
-          </li>
-          <li>
-            <span class="step-number" aria-hidden="true">2</span>
-            <div>
-              <h3>Add plugins</h3>
-              <p>Use the Plugin Hub to choose tools that match your workflow.</p>
-            </div>
-          </li>
-          <li>
-            <span class="step-number" aria-hidden="true">3</span>
-            <div>
-              <h3>Open an existing project</h3>
-              <p>Open an SCL file to start viewing, editing and validating your data.</p>
-            </div>
-          </li>
-        </ol>
-        ${this.hasCustomizations
-          ? this.renderReturningActions()
-          : this.renderFirstTimeActions()}
       </section>
     `;
   }
 
   render() {
     return html`
-      <div class="landing">
-        <header class="banner">
-          <h1>Welcome to OpenSCD <span>Explorer</span></h1>
-          <p class="tagline">Explore OpenSCD and build your workspace.</p>
-          <p>
-            OpenSCD Explorer is an IEC 61850 SCL editor and workspace built from
-            configurable plugins. It helps you view, edit and validate SCL files,
-            and extend your environment with the tools you need.
-          </p>
+      <main class="landing">
+        <header class="topbar">
+          <strong class="header-title">
+            <span class="header-icon" aria-hidden="true"></span>
+            OpenSCD
+          </strong>
+          <a
+            href="https://github.com/OMICRONEnergyOSS/oscd-explorer"
+            target="_blank"
+            rel="noopener noreferrer"
+            >GitHub ↗</a
+          >
         </header>
-        <div class="columns">
-          ${this.renderDistrosPanel()} ${OscdExplorerLandingPage.renderFurtherInfoPanel()}
+        <div class="intro">
+          <h1>Welcome to OpenSCD</h1>
+          <p>
+            An open-source IEC 61850 engineering tool for creating and editing
+            SCL files.
+          </p>
+          <p>
+            Choose a ready-to-use distribution or build a workspace with the
+            plugins you need.
+          </p>
+          <a
+            href="https://openscd.org"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Learn more at openscd.org ↗</a
+          >
         </div>
-        ${this.renderGettingStartedSection()}
-      </div>
+        <section aria-labelledby="choose-heading">
+          <h2 id="choose-heading" class="choose-heading">
+            Choose how you want to get started
+          </h2>
+          <p class="choose-intro">
+            Choose a starting point to see available options.
+          </p>
+          <div class="choices">
+            ${this.renderChoice(
+              "distros",
+              "Distributions",
+              "Pre-built OpenSCD versions with a curated set of plugins.",
+              cubeIcon,
+            )}
+            ${this.renderChoice(
+              "custom",
+              "Custom build",
+              "Choose plugins yourself to create a workspace that fits your needs.",
+              fileIcon,
+            )}
+          </div>
+          <div id="choice-content">
+            ${this.selectedView === "distros" ? this.renderDistros() : nothing}
+            ${this.selectedView === "custom"
+              ? this.renderCustomBuild()
+              : nothing}
+          </div>
+        </section>
+        <section class="contributors" aria-labelledby="contributors-heading">
+          <h2 id="contributors-heading">OpenSCD contributors</h2>
+          <p>Organizations building the OpenSCD ecosystem</p>
+          ${this.contributorsStatus === "loading"
+            ? html`<p role="status">Loading contributors…</p>`
+            : nothing}
+          ${this.contributorsStatus === "error"
+            ? html`<p role="status">Could not load contributors right now.</p>`
+            : nothing}
+          ${this.contributorsStatus === "loaded"
+            ? html`<ul class="contributor-list">
+                ${this.contributors.map(
+                  (contributor) => html`
+                    <li>
+                      <a
+                        href="${contributor.url}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        ${contributor.icon &&
+                        !this.failedIcons.has(contributor.icon)
+                          ? html`<img
+                              src="${contributor.icon}"
+                              alt=""
+                              referrerpolicy="no-referrer"
+                              @error=${this.handleIconError}
+                            />`
+                          : nothing}
+                        <span>${contributor.name}</span>
+                      </a>
+                    </li>
+                  `,
+                )}
+              </ul>`
+            : nothing}
+        </section>
+      </main>
     `;
   }
 
@@ -306,248 +388,345 @@ export class OscdExplorerLandingPage extends LitElement {
       display: block;
       height: 100%;
       overflow: auto;
-      background-color: var(--landing-background-color, #fbf4e2);
-      color: var(--md-sys-color-on-surface, #1a1a1a);
+      background: var(--landing-background-color, #fbf8ec);
+      color: #233344;
       font-family: var(--landing-heading-font-family, "Roboto", sans-serif);
-      box-sizing: border-box;
-      --panel-radius: 14px;
     }
 
     * {
       box-sizing: border-box;
     }
+    a {
+      color: #514ecb;
+    }
+    button {
+      font: inherit;
+    }
+    button:focus-visible,
+    a:focus-visible {
+      outline: 3px solid #005ea8;
+      outline-offset: 3px;
+    }
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
 
     .landing {
       max-width: 1300px;
-      margin: 0 auto;
-      padding: 48px 32px 72px;
+      margin: auto;
+      padding: 28px 32px 48px;
     }
-
-    .banner {
-      margin: 0 16px 72px;
-      max-width: 720px;
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #e1e2da;
+      padding-bottom: 16px;
+      color: #153c61;
     }
-
-    .banner h1 {
-      color: var(--landing-heading-color, #657d84);
-      font-size: var(--landing-heading-size, clamp(2.25rem, 4vw, 3.25rem));
-      line-height: 1.15;
-      font-weight: var(--landing-heading-weight, 700);
-      margin: 0 0 12px;
-    }
-
-    .banner h1 span {
-      color: #2e9f9d;
-    }
-
-    .banner p {
-      color: var(--landing-subheading-color, inherit);
-      font-size: var(--landing-subheading-size, 1.1rem);
-      line-height: 1.45;
-      margin: 0 0 20px;
-    }
-
-    .banner .tagline {
-      color: #555;
-      font-size: 1.4rem;
-    }
-
-    .columns {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 20px;
-    }
-
-    .panel {
-      position: relative;
-      overflow: hidden;
-      border-radius: var(--panel-radius);
-      padding: 28px 32px 24px;
-      background: var(--landing-panel-background-color, #706ab9);
-      color: var(--landing-panel-color, #fff);
-    }
-
-    .panel h2 {
-      margin: 0 0 4px;
-      color: inherit;
-      font-size: 1.35rem;
-    }
-
-    .panel-heading {
+    .header-title {
       display: flex;
       align-items: center;
-      gap: 24px;
-      min-height: 72px;
+      gap: 8px;
+      font-size: 1.2rem;
     }
-
-    .panel-icon {
+    .header-icon {
+      width: 32px;
+      height: 29px;
+      background-color: currentColor;
+      mask: url("./openscd-icon.svg") center / contain no-repeat;
+    }
+    .topbar a {
+      color: #456b89;
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .intro {
+      margin: 32px 0 40px;
+      color: #486d89;
+    }
+    .intro h1 {
+      margin: 0 0 16px;
+      font-size: clamp(2rem, 4vw, 2.5rem);
+      line-height: 1.15;
+    }
+    .intro p {
+      margin: 0 0 8px;
+      line-height: 1.5;
+    }
+    .intro a {
+      display: inline-block;
+      margin-top: 20px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .choose-heading {
+      color: #153c61;
+      font-size: 1rem;
+      margin: 0 0 8px;
+    }
+    .choose-intro {
+      color: #486d89;
+      margin: 0 0 20px;
+      font-size: 0.9rem;
+    }
+    .choices {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px;
+    }
+    .choice {
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      width: 100%;
+      min-height: 100px;
+      padding: 16px;
+      border: 3px solid transparent;
+      border-radius: 8px;
+      color: white;
+      text-align: left;
+      cursor: pointer;
+    }
+    .choice.distros {
+      background: #6967c7;
+    }
+    .choice.custom {
+      background: #287b80;
+    }
+    .choice.distros.selected {
+      background: #4634a5;
+      border-color: #2e1d82;
+    }
+    .choice.custom.selected {
+      background: #267579;
+      border-color: #07545b;
+    }
+    .choice-icon {
       display: grid;
       place-items: center;
-      width: 68px;
-      height: 68px;
       flex: none;
-      border-radius: 12px;
+      width: 54px;
+      height: 54px;
+      border-radius: 8px;
       background: rgba(255, 255, 255, 0.23);
     }
-
-    .panel-icon svg {
-      width: 36px;
-      height: 36px;
+    svg {
       stroke: currentColor;
       stroke-width: 2;
       stroke-linecap: round;
       stroke-linejoin: round;
     }
-
-    .panel-intro {
-      margin: 0;
-      opacity: 0.9;
+    .choice-icon svg {
+      width: 30px;
+      height: 30px;
     }
-
-    .hint {
-      font-size: 0.875rem;
-      opacity: 0.8;
-    }
-
-    .link-list {
+    .choice-text {
       position: relative;
       z-index: 1;
-      list-style: none;
-      margin: 24px 0 0;
-      padding: 0;
+      display: grid;
+      gap: 6px;
+      max-width: 280px;
     }
-
-    .link-list li {
-      margin: 0 0 13px;
+    .choice-text strong {
+      font-size: 1.2rem;
     }
-
-    .link-list a {
-      color: inherit;
-      font-weight: 500;
-      text-underline-offset: 3px;
-      overflow-wrap: anywhere;
+    .choice-text span {
+      font-size: 0.875rem;
+      line-height: 1.35;
     }
-
-    .panel-art {
+    .choice-art {
       position: absolute;
-      width: 160px;
-      height: 160px;
-      right: -12px;
-      bottom: -54px;
-      stroke: currentColor;
-      stroke-width: 4;
-      stroke-linejoin: round;
-      opacity: 0.2;
-      pointer-events: none;
+      width: 130px;
+      right: -10px;
+      bottom: -35px;
+      opacity: 0.22;
     }
-
-    .getting-started {
-      margin-top: 40px;
+    .choice-art svg {
+      width: 100%;
     }
-
-    .getting-started h2 {
+    .expanded {
+      margin-top: 16px;
+      padding: 24px;
+      border-radius: 16px;
+      background: #f5f0e2;
+    }
+    .expanded h2 {
       margin: 0 0 6px;
-      font-size: 2rem;
+      font-size: 1.5rem;
     }
-
     .section-intro {
-      margin-top: 0;
-      color: #555;
+      margin: 0;
+      color: #536978;
+      line-height: 1.5;
     }
-
+    .distros-list {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      list-style: none;
+      padding: 0;
+      margin: 28px 0 0;
+    }
+    .distro-card {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      height: 100%;
+      min-height: 145px;
+      padding: 20px;
+      border: 1px solid #dfd6c6;
+      border-radius: 8px;
+      background: #fcfaf5;
+      color: #536575;
+      text-decoration: none;
+      line-height: 1.4;
+    }
+    .distro-card:hover,
+    .distro-card.last-selected {
+      border-color: #5a4ce3;
+    }
+    .distro-heading {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      color: #233344;
+    }
+    .distro-heading svg,
+    .distro-heading img {
+      flex: none;
+      width: 40px;
+      height: 40px;
+      color: #6558ae;
+    }
+    .distro-heading img {
+      object-fit: contain;
+    }
     .steps {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 32px;
+      gap: 28px;
       list-style: none;
       padding: 0;
-      margin: 28px 0 24px;
+      margin: 24px 0;
     }
-
     .steps li {
       display: flex;
       align-items: flex-start;
-      gap: 20px;
+      gap: 16px;
     }
-
     .step-number {
       display: grid;
       place-items: center;
-      width: 48px;
-      height: 48px;
       flex: none;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
-      background: #e6daf0;
-      color: #493b70;
+      background: #92cdca;
+      color: #174e53;
+      font-size: 1.25rem;
       font-weight: 700;
-      font-size: 1.3rem;
     }
-
     .steps h3 {
-      font-size: 1.15rem;
-      margin: 8px 0 12px;
+      margin: 8px 0 10px;
+      font-size: 1rem;
+      color: #426779;
     }
-
     .steps p {
-      line-height: 1.45;
       margin: 0;
+      color: #536978;
+      line-height: 1.4;
     }
-
     .quick-actions {
       display: flex;
       flex-wrap: wrap;
       gap: 12px;
-      margin-top: 28px;
+      margin-top: 24px;
     }
-
     .cta {
-      font: inherit;
-      font-weight: 500;
-      border: none;
-      border-radius: var(--panel-radius);
+      min-width: 150px;
       padding: 10px 20px;
+      border: 2px solid #007e87;
+      border-radius: 12px;
+      background: #007e87;
+      color: white;
+      font-weight: 700;
       cursor: pointer;
-      background: var(--md-sys-color-primary, #005ea8);
-      color: var(--md-sys-color-on-primary, #fff);
     }
-
     .cta.secondary {
       background: transparent;
-      color: var(--md-sys-color-primary, #005ea8);
-      border: 1px solid var(--md-sys-color-primary, #005ea8);
+      color: #006a72;
     }
-
+    .contributors {
+      margin-top: 56px;
+      padding-top: 32px;
+      border-top: 1px solid #e1e2da;
+    }
+    .contributors h2 {
+      margin: 0 0 4px;
+      color: #153c61;
+      font-size: 1.3rem;
+    }
+    .contributors p {
+      margin: 0 0 16px;
+      color: #486d89;
+    }
+    .contributor-list {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      gap: 20px;
+      list-style: none;
+      margin: 0;
+      padding: 20px;
+      border: 1px solid #e2ded6;
+      border-radius: 8px;
+      background: white;
+    }
+    .contributor-list a {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: #153c61;
+      text-align: center;
+      text-decoration: none;
+    }
+    .contributor-list img {
+      width: 140px;
+      height: 48px;
+      object-fit: contain;
+    }
     @media (max-width: 850px) {
-      .columns {
-        grid-template-columns: 1fr;
+      .distros-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
-
       .steps {
         grid-template-columns: 1fr;
-        gap: 24px;
+        gap: 20px;
       }
     }
-
-    @media (max-width: 520px) {
+    @media (max-width: 600px) {
       .landing {
-        padding: 32px 16px 48px;
+        padding: 24px 16px 40px;
       }
-
-      .banner {
-        margin: 0 0 40px;
+      .choices,
+      .distros-list {
+        grid-template-columns: 1fr;
       }
-
-      .panel {
-        padding: 22px;
+      .expanded {
+        padding: 20px;
       }
-
-      .panel-heading {
-        gap: 16px;
-      }
-
-      .panel-icon {
-        width: 52px;
-        height: 52px;
+      .contributor-list {
+        flex-wrap: wrap;
       }
     }
   `;
