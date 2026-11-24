@@ -1,26 +1,34 @@
 [
   {
-    "name": "OMICRON Academy OpenSCD",
+    "name": "OMICRON Academy",
+    "description": "Training, examples, and a public development preview.",
+    "icon": "https://www.omicronenergy.com/.resources/omicron-mgnl-module/webresources/favicon/omicronenergy/favicon.svg",
     "url": "https://omicronenergyoss.github.io/oscd-academy/"
   },
   {
     "name": "OpenEnergyTools SCL Editor",
+    "description": "SCL editor with plugin prototypes and feature previews.",
     "url": "https://openenergytools.github.io/scl-editor"
   },
   {
-    "name": "Transpower NZ System Configuration Tool",
+    "name": "Transpower NZ",
+    "description": "System configuration tools built on OpenEnergyTools.",
     "url": "https://transpower-nz.github.io/open-scd"
   },
   {
-    "name": "LF Energy CoMPAS",
+    "name": "CoMPAS demo",
+    "description": "OpenSCD frontend connected to a demo backend.",
+    "icon": "https://raw.githubusercontent.com/lf-energy/artwork/main/projects/compas/horizontal/color/compas-horizontal-color.svg",
     "url": "https://demo.compas.energy"
   },
   {
-    "name": "SprintEins OpenSCD",
+    "name": "SprintEins",
+    "description": "A distribution based on the original community version.",
     "url": "https://openscd.sprinteins.com/"
   },
   {
     "name": "Meinberg ICT",
+    "description": "IED configuration for IEC 61850 capable PTP clocks.",
     "url": "https://meinberg-sync.github.io/mbg-open-scd"
   }
 ]
