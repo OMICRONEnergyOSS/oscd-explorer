@@ -5,18 +5,8 @@
     "url": "https://www.omicronenergy.com/"
   },
   {
-    "name": "Alliander",
-    "icon": "https://www.alliander.com/assets/logo.png",
-    "url": "https://www.alliander.com/"
-  },
-  {
     "name": "CoMPAS",
     "icon": "https://raw.githubusercontent.com/lf-energy/artwork/main/projects/compas/horizontal/color/compas-horizontal-color.svg",
     "url": "https://lfenergy.org/projects/compas/"
-  },
-  {
-    "name": "BearingPoint",
-    "icon": "https://www.bearingpoint.com/files/BearingPoint_Logotype_Black_RGB.png?max_w=160",
-    "url": "https://www.bearingpoint.com/en/"
   }
 ]
